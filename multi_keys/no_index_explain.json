@@ -1,0 +1,189 @@
+{
+    "queryPlanner" : {
+        "plannerVersion" : 1,
+        "namespace" : "SORTDB.multikeys",
+        "indexFilterSet" : false,
+        "parsedQuery" : {
+            "stats" : {
+                "$elemMatch" : {
+                    "$or" : [
+                        {
+                            "$and" : [
+                                {
+                                    "a" : {
+                                        "$eq" : 5
+                                    }
+                                },
+                                {
+                                    "b" : {
+                                        "$eq" : 5
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "$and" : [
+                                {
+                                    "a" : {
+                                        "$eq" : 8
+                                    }
+                                },
+                                {
+                                    "b" : {
+                                        "$eq" : 8
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                }
+            }
+        },
+        "winningPlan" : {
+            "stage" : "SORT",
+            "sortPattern" : {
+                "dt" : -1
+            },
+            "inputStage" : {
+                "stage" : "SORT_KEY_GENERATOR",
+                "inputStage" : {
+                    "stage" : "COLLSCAN",
+                    "filter" : {
+                        "stats" : {
+                            "$elemMatch" : {
+                                "$or" : [
+                                    {
+                                        "$and" : [
+                                            {
+                                                "a" : {
+                                                    "$eq" : 5
+                                                }
+                                            },
+                                            {
+                                                "b" : {
+                                                    "$eq" : 5
+                                                }
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "$and" : [
+                                            {
+                                                "a" : {
+                                                    "$eq" : 8
+                                                }
+                                            },
+                                            {
+                                                "b" : {
+                                                    "$eq" : 8
+                                                }
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    "direction" : "forward"
+                }
+            }
+        },
+        "rejectedPlans" : [ ]
+    },
+    "executionStats" : {
+        "executionSuccess" : true,
+        "nReturned" : 16,
+        "executionTimeMillis" : 1,
+        "totalKeysExamined" : 0,
+        "totalDocsExamined" : 1000,
+        "executionStages" : {
+            "stage" : "SORT",
+            "nReturned" : 16,
+            "executionTimeMillisEstimate" : 0,
+            "works" : 1020,
+            "advanced" : 16,
+            "needTime" : 1003,
+            "needYield" : 0,
+            "saveState" : 7,
+            "restoreState" : 7,
+            "isEOF" : 1,
+            "invalidates" : 0,
+            "sortPattern" : {
+                "dt" : -1
+            },
+            "memUsage" : 1824,
+            "memLimit" : 33554432,
+            "inputStage" : {
+                "stage" : "SORT_KEY_GENERATOR",
+                "nReturned" : 16,
+                "executionTimeMillisEstimate" : 0,
+                "works" : 1003,
+                "advanced" : 16,
+                "needTime" : 986,
+                "needYield" : 0,
+                "saveState" : 7,
+                "restoreState" : 7,
+                "isEOF" : 1,
+                "invalidates" : 0,
+                "inputStage" : {
+                    "stage" : "COLLSCAN",
+                    "filter" : {
+                        "stats" : {
+                            "$elemMatch" : {
+                                "$or" : [
+                                    {
+                                        "$and" : [
+                                            {
+                                                "a" : {
+                                                    "$eq" : 5
+                                                }
+                                            },
+                                            {
+                                                "b" : {
+                                                    "$eq" : 5
+                                                }
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "$and" : [
+                                            {
+                                                "a" : {
+                                                    "$eq" : 8
+                                                }
+                                            },
+                                            {
+                                                "b" : {
+                                                    "$eq" : 8
+                                                }
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    "nReturned" : 16,
+                    "executionTimeMillisEstimate" : 0,
+                    "works" : 1002,
+                    "advanced" : 16,
+                    "needTime" : 985,
+                    "needYield" : 0,
+                    "saveState" : 7,
+                    "restoreState" : 7,
+                    "isEOF" : 1,
+                    "invalidates" : 0,
+                    "direction" : "forward",
+                    "docsExamined" : 1000
+                }
+            }
+        }
+    },
+    "serverInfo" : {
+        "host" : "Kens-MacBook-Pro.local",
+        "port" : 27017,
+        "version" : "3.4.9",
+        "gitVersion" : "876ebee8c7dd0e2d992f36a848ff4dc50ee6603e"
+    },
+    "ok" : 1
+}
