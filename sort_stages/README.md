@@ -19,7 +19,7 @@ BulkWriteResult({
 })
 ```
 ## Use Case
-Find all documents with _a_ equals 25 or 50, and sorted by b ascendingly.
+Find all documents with _a_ equals to 25 or 50, and sorted by _b_ ascendingly.
 ```
 > db.values.explain("executionStats").find( { a: {$in: [25, 50]} } ).sort({ b: 1 })
 ```
