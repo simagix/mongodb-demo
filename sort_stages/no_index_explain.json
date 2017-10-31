@@ -1,0 +1,105 @@
+{
+    "queryPlanner" : {
+        "plannerVersion" : 1,
+        "namespace" : "SORTDB.values",
+        "indexFilterSet" : false,
+        "parsedQuery" : {
+            "a" : {
+                "$in" : [
+                    25,
+                    50
+                ]
+            }
+        },
+        "winningPlan" : {
+            "stage" : "SORT",
+            "sortPattern" : {
+                "b" : 1
+            },
+            "inputStage" : {
+                "stage" : "SORT_KEY_GENERATOR",
+                "inputStage" : {
+                    "stage" : "COLLSCAN",
+                    "filter" : {
+                        "a" : {
+                            "$in" : [
+                                25,
+                                50
+                            ]
+                        }
+                    },
+                    "direction" : "forward"
+                }
+            }
+        },
+        "rejectedPlans" : [ ]
+    },
+    "executionStats" : {
+        "executionSuccess" : true,
+        "nReturned" : 25,
+        "executionTimeMillis" : 0,
+        "totalKeysExamined" : 0,
+        "totalDocsExamined" : 1000,
+        "executionStages" : {
+            "stage" : "SORT",
+            "nReturned" : 25,
+            "executionTimeMillisEstimate" : 0,
+            "works" : 1029,
+            "advanced" : 25,
+            "needTime" : 1003,
+            "needYield" : 0,
+            "saveState" : 8,
+            "restoreState" : 8,
+            "isEOF" : 1,
+            "invalidates" : 0,
+            "sortPattern" : {
+                "b" : 1
+            },
+            "memUsage" : 1300,
+            "memLimit" : 33554432,
+            "inputStage" : {
+                "stage" : "SORT_KEY_GENERATOR",
+                "nReturned" : 25,
+                "executionTimeMillisEstimate" : 0,
+                "works" : 1003,
+                "advanced" : 25,
+                "needTime" : 977,
+                "needYield" : 0,
+                "saveState" : 8,
+                "restoreState" : 8,
+                "isEOF" : 1,
+                "invalidates" : 0,
+                "inputStage" : {
+                    "stage" : "COLLSCAN",
+                    "filter" : {
+                        "a" : {
+                            "$in" : [
+                                25,
+                                50
+                            ]
+                        }
+                    },
+                    "nReturned" : 25,
+                    "executionTimeMillisEstimate" : 0,
+                    "works" : 1002,
+                    "advanced" : 25,
+                    "needTime" : 976,
+                    "needYield" : 0,
+                    "saveState" : 8,
+                    "restoreState" : 8,
+                    "isEOF" : 1,
+                    "invalidates" : 0,
+                    "direction" : "forward",
+                    "docsExamined" : 1000
+                }
+            }
+        }
+    },
+    "serverInfo" : {
+        "host" : "Kens-MacBook-Pro.local",
+        "port" : 27017,
+        "version" : "3.4.9",
+        "gitVersion" : "876ebee8c7dd0e2d992f36a848ff4dc50ee6603e"
+    },
+    "ok" : 1
+}

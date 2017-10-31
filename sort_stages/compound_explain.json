@@ -1,0 +1,245 @@
+{
+    "queryPlanner" : {
+        "plannerVersion" : 1,
+        "namespace" : "SORTDB.values",
+        "indexFilterSet" : false,
+        "parsedQuery" : {
+            "a" : {
+                "$in" : [
+                    25,
+                    50
+                ]
+            }
+        },
+        "winningPlan" : {
+            "stage" : "FETCH",
+            "inputStage" : {
+                "stage" : "SORT_MERGE",
+                "sortPattern" : {
+                    "b" : 1
+                },
+                "inputStages" : [
+                    {
+                        "stage" : "IXSCAN",
+                        "keyPattern" : {
+                            "a" : 1,
+                            "b" : 1
+                        },
+                        "indexName" : "a_1_b_1",
+                        "isMultiKey" : false,
+                        "multiKeyPaths" : {
+                            "a" : [ ],
+                            "b" : [ ]
+                        },
+                        "isUnique" : false,
+                        "isSparse" : false,
+                        "isPartial" : false,
+                        "indexVersion" : 2,
+                        "direction" : "forward",
+                        "indexBounds" : {
+                            "a" : [
+                                "[25.0, 25.0]"
+                            ],
+                            "b" : [
+                                "[MinKey, MaxKey]"
+                            ]
+                        }
+                    },
+                    {
+                        "stage" : "IXSCAN",
+                        "keyPattern" : {
+                            "a" : 1,
+                            "b" : 1
+                        },
+                        "indexName" : "a_1_b_1",
+                        "isMultiKey" : false,
+                        "multiKeyPaths" : {
+                            "a" : [ ],
+                            "b" : [ ]
+                        },
+                        "isUnique" : false,
+                        "isSparse" : false,
+                        "isPartial" : false,
+                        "indexVersion" : 2,
+                        "direction" : "forward",
+                        "indexBounds" : {
+                            "a" : [
+                                "[50.0, 50.0]"
+                            ],
+                            "b" : [
+                                "[MinKey, MaxKey]"
+                            ]
+                        }
+                    }
+                ]
+            }
+        },
+        "rejectedPlans" : [
+            {
+                "stage" : "SORT",
+                "sortPattern" : {
+                    "b" : 1
+                },
+                "inputStage" : {
+                    "stage" : "SORT_KEY_GENERATOR",
+                    "inputStage" : {
+                        "stage" : "FETCH",
+                        "inputStage" : {
+                            "stage" : "IXSCAN",
+                            "keyPattern" : {
+                                "a" : 1
+                            },
+                            "indexName" : "a_1",
+                            "isMultiKey" : false,
+                            "multiKeyPaths" : {
+                                "a" : [ ]
+                            },
+                            "isUnique" : false,
+                            "isSparse" : false,
+                            "isPartial" : false,
+                            "indexVersion" : 2,
+                            "direction" : "forward",
+                            "indexBounds" : {
+                                "a" : [
+                                    "[25.0, 25.0]",
+                                    "[50.0, 50.0]"
+                                ]
+                            }
+                        }
+                    }
+                }
+            }
+        ]
+    },
+    "executionStats" : {
+        "executionSuccess" : true,
+        "nReturned" : 25,
+        "executionTimeMillis" : 0,
+        "totalKeysExamined" : 25,
+        "totalDocsExamined" : 25,
+        "executionStages" : {
+            "stage" : "FETCH",
+            "nReturned" : 25,
+            "executionTimeMillisEstimate" : 0,
+            "works" : 54,
+            "advanced" : 25,
+            "needTime" : 27,
+            "needYield" : 0,
+            "saveState" : 1,
+            "restoreState" : 1,
+            "isEOF" : 1,
+            "invalidates" : 0,
+            "docsExamined" : 25,
+            "alreadyHasObj" : 0,
+            "inputStage" : {
+                "stage" : "SORT_MERGE",
+                "nReturned" : 25,
+                "executionTimeMillisEstimate" : 0,
+                "works" : 52,
+                "advanced" : 25,
+                "needTime" : 27,
+                "needYield" : 0,
+                "saveState" : 1,
+                "restoreState" : 1,
+                "isEOF" : 1,
+                "invalidates" : 0,
+                "sortPattern" : {
+                    "b" : 1
+                },
+                "dupsTested" : 25,
+                "dupsDropped" : 0,
+                "inputStages" : [
+                    {
+                        "stage" : "IXSCAN",
+                        "nReturned" : 10,
+                        "executionTimeMillisEstimate" : 0,
+                        "works" : 11,
+                        "advanced" : 10,
+                        "needTime" : 0,
+                        "needYield" : 0,
+                        "saveState" : 1,
+                        "restoreState" : 1,
+                        "isEOF" : 1,
+                        "invalidates" : 0,
+                        "keyPattern" : {
+                            "a" : 1,
+                            "b" : 1
+                        },
+                        "indexName" : "a_1_b_1",
+                        "isMultiKey" : false,
+                        "multiKeyPaths" : {
+                            "a" : [ ],
+                            "b" : [ ]
+                        },
+                        "isUnique" : false,
+                        "isSparse" : false,
+                        "isPartial" : false,
+                        "indexVersion" : 2,
+                        "direction" : "forward",
+                        "indexBounds" : {
+                            "a" : [
+                                "[25.0, 25.0]"
+                            ],
+                            "b" : [
+                                "[MinKey, MaxKey]"
+                            ]
+                        },
+                        "keysExamined" : 10,
+                        "seeks" : 1,
+                        "dupsTested" : 0,
+                        "dupsDropped" : 0,
+                        "seenInvalidated" : 0
+                    },
+                    {
+                        "stage" : "IXSCAN",
+                        "nReturned" : 15,
+                        "executionTimeMillisEstimate" : 0,
+                        "works" : 16,
+                        "advanced" : 15,
+                        "needTime" : 0,
+                        "needYield" : 0,
+                        "saveState" : 1,
+                        "restoreState" : 1,
+                        "isEOF" : 1,
+                        "invalidates" : 0,
+                        "keyPattern" : {
+                            "a" : 1,
+                            "b" : 1
+                        },
+                        "indexName" : "a_1_b_1",
+                        "isMultiKey" : false,
+                        "multiKeyPaths" : {
+                            "a" : [ ],
+                            "b" : [ ]
+                        },
+                        "isUnique" : false,
+                        "isSparse" : false,
+                        "isPartial" : false,
+                        "indexVersion" : 2,
+                        "direction" : "forward",
+                        "indexBounds" : {
+                            "a" : [
+                                "[50.0, 50.0]"
+                            ],
+                            "b" : [
+                                "[MinKey, MaxKey]"
+                            ]
+                        },
+                        "keysExamined" : 15,
+                        "seeks" : 1,
+                        "dupsTested" : 0,
+                        "dupsDropped" : 0,
+                        "seenInvalidated" : 0
+                    }
+                ]
+            }
+        }
+    },
+    "serverInfo" : {
+        "host" : "Kens-MacBook-Pro.local",
+        "port" : 27017,
+        "version" : "3.4.9",
+        "gitVersion" : "876ebee8c7dd0e2d992f36a848ff4dc50ee6603e"
+    },
+    "ok" : 1
+}
