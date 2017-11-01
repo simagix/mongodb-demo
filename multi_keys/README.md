@@ -31,7 +31,7 @@ BulkWriteResult({
 Find all documents with both _a_ and _b_ equal 5 or both _a_ and _b_ equal to 8, and sorted by _dt_ descendingly.
 ```
 > db.multikeys.explain("executionStats").find(
-    { stats: {$elemMatch:  {$or: [{a: 5, b: 5}, {c: 8, d: 8}] } } }
+    { stats: {$elemMatch:  {$or: [{a: 5, b: 5}, {a: 8, b: 8}] } } }
 ).sort( { dt: -1} )
 ```
 ### No Index
@@ -175,4 +175,82 @@ FETCH
 .  .  |  - nReturned : 7
 .  .  |  - keysExamined : 7
 .  .  |  - index used : stats.a_1_stats.b_1_dt_1
+```
+### Unequal Number of Fields
+Remove _b_ from document where _a_ equals to 1.
+```
+db.multikeys.updateMany({ "stats.a": 1 }, { $set: { "stats.$": { "a": 1}}} )
+```
+Create an index on _b_.
+```
+> db.multikeys.createIndex({ b: 1 })
+```
+Change the query to
+```
+> db.multikeys.explain("executionStats").find(
+    { stats: {$elemMatch:  {$or: [{a: 5, b: 5}, {b: null}] } } }
+).sort( { dt: -1} )
+```
+The result shows data has to be sorted in the memory.  Note that _OR_ stage is in place instead of _SORT_MERGE_.
+```
+version : 3.4.9
+-- FILTER --
+{
+   "stats": {
+      "$elemMatch": {
+         "$or": [
+            {
+               "$and": [
+                  {
+                     "a": {
+                        "$eq": 5
+                     }
+                  },
+                  {
+                     "b": {
+                        "$eq": 5
+                     }
+                  }
+               ]
+            },
+            {
+               "b": {
+                  "$eq": null
+               }
+            }
+         ]
+      }
+   }
+}
+
+-- SUMMARY --
+executionTimeMillis : 16
+nReturned : 1000
+totalKeysExamined : 1009
+totalDocsExamined : 1000
+
+-- STAGES --
+SORT
+|  - executionTimeMillisEstimate : 0
+|  - nReturned : 1000
++--SORT_KEY_GENERATOR
+.  |  - executionTimeMillisEstimate : 0
+.  |  - nReturned : 1000
+.  +--FETCH
+.  .  |  - executionTimeMillisEstimate : 0
+.  .  |  - nReturned : 1000
+.  .  |  - docsExamined : 1000
+.  .  +--OR
+.  .  .  |  - executionTimeMillisEstimate : 0
+.  .  .  |  - nReturned : 1000
+.  .  .  +--IXSCAN
+.  .  .  .  |  - executionTimeMillisEstimate : 0
+.  .  .  .  |  - nReturned : 9
+.  .  .  .  |  - keysExamined : 9
+.  .  .  .  |  - index used : stats.a_1_stats.b_1_dt_1
+.  .  .  +--IXSCAN
+.  .  .  .  |  - executionTimeMillisEstimate : 0
+.  .  .  .  |  - nReturned : 1000
+.  .  .  .  |  - keysExamined : 1000
+.  .  .  .  |  - index used : stats.b_1
 ```

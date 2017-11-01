@@ -1,0 +1,518 @@
+{
+    "queryPlanner" : {
+        "plannerVersion" : 1,
+        "namespace" : "SORTDB.multikeys",
+        "indexFilterSet" : false,
+        "parsedQuery" : {
+            "stats" : {
+                "$elemMatch" : {
+                    "$or" : [
+                        {
+                            "$and" : [
+                                {
+                                    "a" : {
+                                        "$eq" : 5
+                                    }
+                                },
+                                {
+                                    "b" : {
+                                        "$eq" : 5
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "b" : {
+                                "$eq" : null
+                            }
+                        }
+                    ]
+                }
+            }
+        },
+        "winningPlan" : {
+            "stage" : "SORT",
+            "sortPattern" : {
+                "dt" : -1
+            },
+            "inputStage" : {
+                "stage" : "SORT_KEY_GENERATOR",
+                "inputStage" : {
+                    "stage" : "FETCH",
+                    "filter" : {
+                        "stats" : {
+                            "$elemMatch" : {
+                                "$or" : [
+                                    {
+                                        "$and" : [
+                                            {
+                                                "a" : {
+                                                    "$eq" : 5
+                                                }
+                                            },
+                                            {
+                                                "b" : {
+                                                    "$eq" : 5
+                                                }
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "b" : {
+                                            "$eq" : null
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    "inputStage" : {
+                        "stage" : "OR",
+                        "inputStages" : [
+                            {
+                                "stage" : "IXSCAN",
+                                "keyPattern" : {
+                                    "stats.a" : 1,
+                                    "stats.b" : 1,
+                                    "dt" : 1
+                                },
+                                "indexName" : "stats.a_1_stats.b_1_dt_1",
+                                "isMultiKey" : true,
+                                "multiKeyPaths" : {
+                                    "stats.a" : [
+                                        "stats"
+                                    ],
+                                    "stats.b" : [
+                                        "stats"
+                                    ],
+                                    "dt" : [ ]
+                                },
+                                "isUnique" : false,
+                                "isSparse" : false,
+                                "isPartial" : false,
+                                "indexVersion" : 2,
+                                "direction" : "forward",
+                                "indexBounds" : {
+                                    "stats.a" : [
+                                        "[5.0, 5.0]"
+                                    ],
+                                    "stats.b" : [
+                                        "[5.0, 5.0]"
+                                    ],
+                                    "dt" : [
+                                        "[MinKey, MaxKey]"
+                                    ]
+                                }
+                            },
+                            {
+                                "stage" : "IXSCAN",
+                                "keyPattern" : {
+                                    "stats.b" : 1
+                                },
+                                "indexName" : "stats.b_1",
+                                "isMultiKey" : true,
+                                "multiKeyPaths" : {
+                                    "stats.b" : [
+                                        "stats"
+                                    ]
+                                },
+                                "isUnique" : false,
+                                "isSparse" : false,
+                                "isPartial" : false,
+                                "indexVersion" : 2,
+                                "direction" : "forward",
+                                "indexBounds" : {
+                                    "stats.b" : [
+                                        "[null, null]"
+                                    ]
+                                }
+                            }
+                        ]
+                    }
+                }
+            }
+        },
+        "rejectedPlans" : [
+            {
+                "stage" : "SORT",
+                "sortPattern" : {
+                    "dt" : -1
+                },
+                "inputStage" : {
+                    "stage" : "SORT_KEY_GENERATOR",
+                    "inputStage" : {
+                        "stage" : "FETCH",
+                        "filter" : {
+                            "stats" : {
+                                "$elemMatch" : {
+                                    "$or" : [
+                                        {
+                                            "$and" : [
+                                                {
+                                                    "b" : {
+                                                        "$eq" : 5
+                                                    }
+                                                },
+                                                {
+                                                    "a" : {
+                                                        "$eq" : 5
+                                                    }
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "b" : {
+                                                "$eq" : null
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        },
+                        "inputStage" : {
+                            "stage" : "OR",
+                            "inputStages" : [
+                                {
+                                    "stage" : "IXSCAN",
+                                    "keyPattern" : {
+                                        "stats.b" : 1
+                                    },
+                                    "indexName" : "stats.b_1",
+                                    "isMultiKey" : true,
+                                    "multiKeyPaths" : {
+                                        "stats.b" : [
+                                            "stats"
+                                        ]
+                                    },
+                                    "isUnique" : false,
+                                    "isSparse" : false,
+                                    "isPartial" : false,
+                                    "indexVersion" : 2,
+                                    "direction" : "forward",
+                                    "indexBounds" : {
+                                        "stats.b" : [
+                                            "[5.0, 5.0]"
+                                        ]
+                                    }
+                                },
+                                {
+                                    "stage" : "IXSCAN",
+                                    "keyPattern" : {
+                                        "stats.b" : 1
+                                    },
+                                    "indexName" : "stats.b_1",
+                                    "isMultiKey" : true,
+                                    "multiKeyPaths" : {
+                                        "stats.b" : [
+                                            "stats"
+                                        ]
+                                    },
+                                    "isUnique" : false,
+                                    "isSparse" : false,
+                                    "isPartial" : false,
+                                    "indexVersion" : 2,
+                                    "direction" : "forward",
+                                    "indexBounds" : {
+                                        "stats.b" : [
+                                            "[null, null]"
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            {
+                "stage" : "SORT",
+                "sortPattern" : {
+                    "dt" : -1
+                },
+                "inputStage" : {
+                    "stage" : "SORT_KEY_GENERATOR",
+                    "inputStage" : {
+                        "stage" : "FETCH",
+                        "filter" : {
+                            "stats" : {
+                                "$elemMatch" : {
+                                    "$or" : [
+                                        {
+                                            "$and" : [
+                                                {
+                                                    "a" : {
+                                                        "$eq" : 5
+                                                    }
+                                                },
+                                                {
+                                                    "b" : {
+                                                        "$eq" : 5
+                                                    }
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "b" : {
+                                                "$eq" : null
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        },
+                        "inputStage" : {
+                            "stage" : "OR",
+                            "inputStages" : [
+                                {
+                                    "stage" : "IXSCAN",
+                                    "keyPattern" : {
+                                        "stats.a" : 1,
+                                        "stats.b" : 1
+                                    },
+                                    "indexName" : "stats.a_1_stats.b_1",
+                                    "isMultiKey" : true,
+                                    "multiKeyPaths" : {
+                                        "stats.a" : [
+                                            "stats"
+                                        ],
+                                        "stats.b" : [
+                                            "stats"
+                                        ]
+                                    },
+                                    "isUnique" : false,
+                                    "isSparse" : false,
+                                    "isPartial" : false,
+                                    "indexVersion" : 2,
+                                    "direction" : "forward",
+                                    "indexBounds" : {
+                                        "stats.a" : [
+                                            "[5.0, 5.0]"
+                                        ],
+                                        "stats.b" : [
+                                            "[5.0, 5.0]"
+                                        ]
+                                    }
+                                },
+                                {
+                                    "stage" : "IXSCAN",
+                                    "keyPattern" : {
+                                        "stats.b" : 1
+                                    },
+                                    "indexName" : "stats.b_1",
+                                    "isMultiKey" : true,
+                                    "multiKeyPaths" : {
+                                        "stats.b" : [
+                                            "stats"
+                                        ]
+                                    },
+                                    "isUnique" : false,
+                                    "isSparse" : false,
+                                    "isPartial" : false,
+                                    "indexVersion" : 2,
+                                    "direction" : "forward",
+                                    "indexBounds" : {
+                                        "stats.b" : [
+                                            "[null, null]"
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        ]
+    },
+    "executionStats" : {
+        "executionSuccess" : true,
+        "nReturned" : 1000,
+        "executionTimeMillis" : 16,
+        "totalKeysExamined" : 1009,
+        "totalDocsExamined" : 1000,
+        "executionStages" : {
+            "stage" : "SORT",
+            "nReturned" : 1000,
+            "executionTimeMillisEstimate" : 0,
+            "works" : 2013,
+            "advanced" : 1000,
+            "needTime" : 1012,
+            "needYield" : 0,
+            "saveState" : 34,
+            "restoreState" : 34,
+            "isEOF" : 1,
+            "invalidates" : 0,
+            "sortPattern" : {
+                "dt" : -1
+            },
+            "memUsage" : 112812,
+            "memLimit" : 33554432,
+            "inputStage" : {
+                "stage" : "SORT_KEY_GENERATOR",
+                "nReturned" : 1000,
+                "executionTimeMillisEstimate" : 0,
+                "works" : 1012,
+                "advanced" : 1000,
+                "needTime" : 11,
+                "needYield" : 0,
+                "saveState" : 34,
+                "restoreState" : 34,
+                "isEOF" : 1,
+                "invalidates" : 0,
+                "inputStage" : {
+                    "stage" : "FETCH",
+                    "filter" : {
+                        "stats" : {
+                            "$elemMatch" : {
+                                "$or" : [
+                                    {
+                                        "$and" : [
+                                            {
+                                                "a" : {
+                                                    "$eq" : 5
+                                                }
+                                            },
+                                            {
+                                                "b" : {
+                                                    "$eq" : 5
+                                                }
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "b" : {
+                                            "$eq" : null
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    "nReturned" : 1000,
+                    "executionTimeMillisEstimate" : 0,
+                    "works" : 1011,
+                    "advanced" : 1000,
+                    "needTime" : 10,
+                    "needYield" : 0,
+                    "saveState" : 34,
+                    "restoreState" : 34,
+                    "isEOF" : 1,
+                    "invalidates" : 0,
+                    "docsExamined" : 1000,
+                    "alreadyHasObj" : 0,
+                    "inputStage" : {
+                        "stage" : "OR",
+                        "nReturned" : 1000,
+                        "executionTimeMillisEstimate" : 0,
+                        "works" : 1011,
+                        "advanced" : 1000,
+                        "needTime" : 10,
+                        "needYield" : 0,
+                        "saveState" : 34,
+                        "restoreState" : 34,
+                        "isEOF" : 1,
+                        "invalidates" : 0,
+                        "dupsTested" : 1009,
+                        "dupsDropped" : 9,
+                        "recordIdsForgotten" : 0,
+                        "inputStages" : [
+                            {
+                                "stage" : "IXSCAN",
+                                "nReturned" : 9,
+                                "executionTimeMillisEstimate" : 0,
+                                "works" : 10,
+                                "advanced" : 9,
+                                "needTime" : 0,
+                                "needYield" : 0,
+                                "saveState" : 34,
+                                "restoreState" : 34,
+                                "isEOF" : 1,
+                                "invalidates" : 0,
+                                "keyPattern" : {
+                                    "stats.a" : 1,
+                                    "stats.b" : 1,
+                                    "dt" : 1
+                                },
+                                "indexName" : "stats.a_1_stats.b_1_dt_1",
+                                "isMultiKey" : true,
+                                "multiKeyPaths" : {
+                                    "stats.a" : [
+                                        "stats"
+                                    ],
+                                    "stats.b" : [
+                                        "stats"
+                                    ],
+                                    "dt" : [ ]
+                                },
+                                "isUnique" : false,
+                                "isSparse" : false,
+                                "isPartial" : false,
+                                "indexVersion" : 2,
+                                "direction" : "forward",
+                                "indexBounds" : {
+                                    "stats.a" : [
+                                        "[5.0, 5.0]"
+                                    ],
+                                    "stats.b" : [
+                                        "[5.0, 5.0]"
+                                    ],
+                                    "dt" : [
+                                        "[MinKey, MaxKey]"
+                                    ]
+                                },
+                                "keysExamined" : 9,
+                                "seeks" : 1,
+                                "dupsTested" : 9,
+                                "dupsDropped" : 0,
+                                "seenInvalidated" : 0
+                            },
+                            {
+                                "stage" : "IXSCAN",
+                                "nReturned" : 1000,
+                                "executionTimeMillisEstimate" : 0,
+                                "works" : 1001,
+                                "advanced" : 1000,
+                                "needTime" : 0,
+                                "needYield" : 0,
+                                "saveState" : 34,
+                                "restoreState" : 34,
+                                "isEOF" : 1,
+                                "invalidates" : 0,
+                                "keyPattern" : {
+                                    "stats.b" : 1
+                                },
+                                "indexName" : "stats.b_1",
+                                "isMultiKey" : true,
+                                "multiKeyPaths" : {
+                                    "stats.b" : [
+                                        "stats"
+                                    ]
+                                },
+                                "isUnique" : false,
+                                "isSparse" : false,
+                                "isPartial" : false,
+                                "indexVersion" : 2,
+                                "direction" : "forward",
+                                "indexBounds" : {
+                                    "stats.b" : [
+                                        "[null, null]"
+                                    ]
+                                },
+                                "keysExamined" : 1000,
+                                "seeks" : 1,
+                                "dupsTested" : 1000,
+                                "dupsDropped" : 0,
+                                "seenInvalidated" : 0
+                            }
+                        ]
+                    }
+                }
+            }
+        }
+    },
+    "serverInfo" : {
+        "host" : "Kens-MacBook-Pro.local",
+        "port" : 27017,
+        "version" : "3.4.9",
+        "gitVersion" : "876ebee8c7dd0e2d992f36a848ff4dc50ee6603e"
+    },
+    "ok" : 1
+}
