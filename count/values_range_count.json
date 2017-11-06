@@ -1,0 +1,115 @@
+{
+	"queryPlanner" : {
+		"plannerVersion" : 1,
+		"namespace" : "SORTDB.records",
+		"indexFilterSet" : false,
+		"parsedQuery" : {
+			"$and" : [
+				{
+					"key" : {
+						"$lte" : "key-2"
+					}
+				},
+				{
+					"key" : {
+						"$gte" : "key-1"
+					}
+				}
+			]
+		},
+		"winningPlan" : {
+			"stage" : "COUNT",
+			"inputStage" : {
+				"stage" : "COUNT_SCAN",
+				"keyPattern" : {
+					"key" : 1
+				},
+				"indexName" : "key_1",
+				"isMultiKey" : false,
+				"multiKeyPaths" : {
+					"key" : [ ]
+				},
+				"isUnique" : false,
+				"isSparse" : false,
+				"isPartial" : false,
+				"indexVersion" : 2,
+				"indexBounds" : {
+					"startKey" : {
+						"key" : "key-1"
+					},
+					"startKeyInclusive" : true,
+					"endKey" : {
+						"key" : "key-2"
+					},
+					"endKeyInclusive" : true
+				}
+			}
+		},
+		"rejectedPlans" : [ ]
+	},
+	"executionStats" : {
+		"executionSuccess" : true,
+		"nReturned" : 0,
+		"executionTimeMillis" : 1,
+		"totalKeysExamined" : 4001,
+		"totalDocsExamined" : 0,
+		"executionStages" : {
+			"stage" : "COUNT",
+			"nReturned" : 0,
+			"executionTimeMillisEstimate" : 0,
+			"works" : 4001,
+			"advanced" : 0,
+			"needTime" : 4000,
+			"needYield" : 0,
+			"saveState" : 31,
+			"restoreState" : 31,
+			"isEOF" : 1,
+			"invalidates" : 0,
+			"nCounted" : 4000,
+			"nSkipped" : 0,
+			"inputStage" : {
+				"stage" : "COUNT_SCAN",
+				"nReturned" : 4000,
+				"executionTimeMillisEstimate" : 0,
+				"works" : 4001,
+				"advanced" : 4000,
+				"needTime" : 0,
+				"needYield" : 0,
+				"saveState" : 31,
+				"restoreState" : 31,
+				"isEOF" : 1,
+				"invalidates" : 0,
+				"keysExamined" : 4001,
+				"keyPattern" : {
+					"key" : 1
+				},
+				"indexName" : "key_1",
+				"isMultiKey" : false,
+				"multiKeyPaths" : {
+					"key" : [ ]
+				},
+				"isUnique" : false,
+				"isSparse" : false,
+				"isPartial" : false,
+				"indexVersion" : 2,
+				"indexBounds" : {
+					"startKey" : {
+						"key" : "key-1"
+					},
+					"startKeyInclusive" : true,
+					"endKey" : {
+						"key" : "key-2"
+					},
+					"endKeyInclusive" : true
+				}
+			}
+		}
+	},
+	"serverInfo" : {
+		"host" : "Kens-MBP",
+		"port" : 27017,
+		"version" : "3.4.10",
+		"gitVersion" : "078f28920cb24de0dd479b5ea6c66c644f6326e9"
+	},
+	"ok" : 1
+}

@@ -1,0 +1,125 @@
+{
+	"queryPlanner" : {
+		"plannerVersion" : 1,
+		"namespace" : "SORTDB.records",
+		"indexFilterSet" : false,
+		"parsedQuery" : {
+			"key" : {
+				"$in" : [
+					"key-1",
+					"key-2"
+				]
+			}
+		},
+		"winningPlan" : {
+			"stage" : "COUNT",
+			"inputStage" : {
+				"stage" : "FETCH",
+				"inputStage" : {
+					"stage" : "IXSCAN",
+					"keyPattern" : {
+						"key" : 1
+					},
+					"indexName" : "key_1",
+					"isMultiKey" : false,
+					"multiKeyPaths" : {
+						"key" : [ ]
+					},
+					"isUnique" : false,
+					"isSparse" : false,
+					"isPartial" : false,
+					"indexVersion" : 2,
+					"direction" : "forward",
+					"indexBounds" : {
+						"key" : [
+							"[\"key-1\", \"key-1\"]",
+							"[\"key-2\", \"key-2\"]"
+						]
+					}
+				}
+			}
+		},
+		"rejectedPlans" : [ ]
+	},
+	"executionStats" : {
+		"executionSuccess" : true,
+		"nReturned" : 0,
+		"executionTimeMillis" : 7,
+		"totalKeysExamined" : 4001,
+		"totalDocsExamined" : 4000,
+		"executionStages" : {
+			"stage" : "COUNT",
+			"nReturned" : 0,
+			"executionTimeMillisEstimate" : 0,
+			"works" : 4001,
+			"advanced" : 0,
+			"needTime" : 4000,
+			"needYield" : 0,
+			"saveState" : 31,
+			"restoreState" : 31,
+			"isEOF" : 1,
+			"invalidates" : 0,
+			"nCounted" : 4000,
+			"nSkipped" : 0,
+			"inputStage" : {
+				"stage" : "FETCH",
+				"nReturned" : 4000,
+				"executionTimeMillisEstimate" : 0,
+				"works" : 4001,
+				"advanced" : 4000,
+				"needTime" : 0,
+				"needYield" : 0,
+				"saveState" : 31,
+				"restoreState" : 31,
+				"isEOF" : 1,
+				"invalidates" : 0,
+				"docsExamined" : 4000,
+				"alreadyHasObj" : 0,
+				"inputStage" : {
+					"stage" : "IXSCAN",
+					"nReturned" : 4000,
+					"executionTimeMillisEstimate" : 0,
+					"works" : 4001,
+					"advanced" : 4000,
+					"needTime" : 0,
+					"needYield" : 0,
+					"saveState" : 31,
+					"restoreState" : 31,
+					"isEOF" : 1,
+					"invalidates" : 0,
+					"keyPattern" : {
+						"key" : 1
+					},
+					"indexName" : "key_1",
+					"isMultiKey" : false,
+					"multiKeyPaths" : {
+						"key" : [ ]
+					},
+					"isUnique" : false,
+					"isSparse" : false,
+					"isPartial" : false,
+					"indexVersion" : 2,
+					"direction" : "forward",
+					"indexBounds" : {
+						"key" : [
+							"[\"key-1\", \"key-1\"]",
+							"[\"key-2\", \"key-2\"]"
+						]
+					},
+					"keysExamined" : 4001,
+					"seeks" : 1,
+					"dupsTested" : 0,
+					"dupsDropped" : 0,
+					"seenInvalidated" : 0
+				}
+			}
+		}
+	},
+	"serverInfo" : {
+		"host" : "Kens-MBP",
+		"port" : 27017,
+		"version" : "3.4.10",
+		"gitVersion" : "078f28920cb24de0dd479b5ea6c66c644f6326e9"
+	},
+	"ok" : 1
+}

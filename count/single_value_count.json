@@ -1,0 +1,106 @@
+{
+	"queryPlanner" : {
+		"plannerVersion" : 1,
+		"namespace" : "SORTDB.records",
+		"indexFilterSet" : false,
+		"parsedQuery" : {
+			"key" : {
+				"$eq" : "key-1"
+			}
+		},
+		"winningPlan" : {
+			"stage" : "COUNT",
+			"inputStage" : {
+				"stage" : "COUNT_SCAN",
+				"keyPattern" : {
+					"key" : 1
+				},
+				"indexName" : "key_1",
+				"isMultiKey" : false,
+				"multiKeyPaths" : {
+					"key" : [ ]
+				},
+				"isUnique" : false,
+				"isSparse" : false,
+				"isPartial" : false,
+				"indexVersion" : 2,
+				"indexBounds" : {
+					"startKey" : {
+						"key" : "key-1"
+					},
+					"startKeyInclusive" : true,
+					"endKey" : {
+						"key" : "key-1"
+					},
+					"endKeyInclusive" : true
+				}
+			}
+		},
+		"rejectedPlans" : [ ]
+	},
+	"executionStats" : {
+		"executionSuccess" : true,
+		"nReturned" : 0,
+		"executionTimeMillis" : 2,
+		"totalKeysExamined" : 2001,
+		"totalDocsExamined" : 0,
+		"executionStages" : {
+			"stage" : "COUNT",
+			"nReturned" : 0,
+			"executionTimeMillisEstimate" : 0,
+			"works" : 2001,
+			"advanced" : 0,
+			"needTime" : 2000,
+			"needYield" : 0,
+			"saveState" : 15,
+			"restoreState" : 15,
+			"isEOF" : 1,
+			"invalidates" : 0,
+			"nCounted" : 2000,
+			"nSkipped" : 0,
+			"inputStage" : {
+				"stage" : "COUNT_SCAN",
+				"nReturned" : 2000,
+				"executionTimeMillisEstimate" : 0,
+				"works" : 2001,
+				"advanced" : 2000,
+				"needTime" : 0,
+				"needYield" : 0,
+				"saveState" : 15,
+				"restoreState" : 15,
+				"isEOF" : 1,
+				"invalidates" : 0,
+				"keysExamined" : 2001,
+				"keyPattern" : {
+					"key" : 1
+				},
+				"indexName" : "key_1",
+				"isMultiKey" : false,
+				"multiKeyPaths" : {
+					"key" : [ ]
+				},
+				"isUnique" : false,
+				"isSparse" : false,
+				"isPartial" : false,
+				"indexVersion" : 2,
+				"indexBounds" : {
+					"startKey" : {
+						"key" : "key-1"
+					},
+					"startKeyInclusive" : true,
+					"endKey" : {
+						"key" : "key-1"
+					},
+					"endKeyInclusive" : true
+				}
+			}
+		}
+	},
+	"serverInfo" : {
+		"host" : "Kens-MBP",
+		"port" : 27017,
+		"version" : "3.4.10",
+		"gitVersion" : "078f28920cb24de0dd479b5ea6c66c644f6326e9"
+	},
+	"ok" : 1
+}
