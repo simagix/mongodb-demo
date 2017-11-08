@@ -1,9 +1,16 @@
 # Utilities
 ## redact_shema.js
-Display the document structure of a collection with redacted data.
+Display the document structure of a collection with redacted data.  The script redacts/masks data as follows:
 
-Usage:
+| Data Type | Masked Value |
+|-|-|
+| ObjectId() | "ObjectId(...)" |
+| string | "String" |
+| number | 0 |
+| boolean | false |
+| Date | "ISODate(...)" |
 
+### Usage
 ```
 mongo --quiet --eval 'var database="$database", collection="$collection"' redact_schema.js
 ```
@@ -18,7 +25,7 @@ The above command find the first document of _WSDB.redacts_ as
 	"_id" : ObjectId("5a031571435ebc1ef985488f"),
 	"a" : "Very sensitive data of backing accounts",
 	"b" : 123,
-	"c" : false,
+	"c" : true,
 	"d" : ISODate("2017-11-08T14:32:17.441Z")
 }
 ```
@@ -28,7 +35,7 @@ and display it as
 	{
 		"ns" : "WSDB.redacts",
 		"schema" : {
-			"_id" : "ObjectId",
+			"_id" : "ObjectId(...)",
 			"a" : "String",
 			"b" : 0,
 			"c" : false,

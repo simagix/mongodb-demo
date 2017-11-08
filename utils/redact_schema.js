@@ -19,7 +19,7 @@ function mask(value) {
 function redact(o) {
     for (var i in o) {
         if(i == "_id") {
-            o[i] = "ObjectId";
+            o[i] = "ObjectId(...)";
         } else if (o[i] !== null && typeof(o[i]) == "object") {
             redact(o[i]);
         } else {
