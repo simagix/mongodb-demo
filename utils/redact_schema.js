@@ -1,7 +1,7 @@
 function mask(value) {
     if(typeof value === "string" || value instanceof String) {
         var regEx = /^\d{4}-\d{2}-\d{2}T.*/;
-        if(value.match(regEx)) return "ISODate(...)";
+        if(value.match(regEx)) return new Date("2017-09-11T09:00-0500");;
         return "String";
     } else if(typeof value === "number" && isFinite(value)) {
         return 0;
@@ -19,7 +19,7 @@ function mask(value) {
 function redact(o) {
     for (var i in o) {
         if(i == "_id") {
-            o[i] = "ObjectId(...)";
+            delete o[i];
         } else if (o[i] !== null && typeof(o[i]) == "object") {
             redact(o[i]);
         } else {
