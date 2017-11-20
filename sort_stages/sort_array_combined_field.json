@@ -1,0 +1,574 @@
+{
+	"queryPlanner" : {
+		"plannerVersion" : 1,
+		"namespace" : "WSDB.forms",
+		"indexFilterSet" : false,
+		"parsedQuery" : {
+			"$or" : [
+				{
+					"rand" : {
+						"$eq" : 5
+					}
+				},
+				{
+					"name_seq" : {
+						"$in" : [
+							"AAA",
+							"ABC",
+							"BBB",
+							"null-123",
+							"null-345",
+							"null-789"
+						]
+					}
+				}
+			]
+		},
+		"winningPlan" : {
+			"stage" : "SUBPLAN",
+			"inputStage" : {
+				"stage" : "FETCH",
+				"inputStage" : {
+					"stage" : "SORT_MERGE",
+					"sortPattern" : {
+						"dt" : -1
+					},
+					"inputStages" : [
+						{
+							"stage" : "IXSCAN",
+							"keyPattern" : {
+								"rand" : 1,
+								"dt" : 1
+							},
+							"indexName" : "rand_1_dt_1",
+							"isMultiKey" : false,
+							"multiKeyPaths" : {
+								"rand" : [ ],
+								"dt" : [ ]
+							},
+							"isUnique" : false,
+							"isSparse" : false,
+							"isPartial" : false,
+							"indexVersion" : 2,
+							"direction" : "backward",
+							"indexBounds" : {
+								"rand" : [
+									"[5.0, 5.0]"
+								],
+								"dt" : [
+									"[MaxKey, MinKey]"
+								]
+							}
+						},
+						{
+							"stage" : "IXSCAN",
+							"keyPattern" : {
+								"name_seq" : 1,
+								"dt" : 1
+							},
+							"indexName" : "name_seq_1_dt_1",
+							"isMultiKey" : false,
+							"multiKeyPaths" : {
+								"name_seq" : [ ],
+								"dt" : [ ]
+							},
+							"isUnique" : false,
+							"isSparse" : false,
+							"isPartial" : false,
+							"indexVersion" : 2,
+							"direction" : "backward",
+							"indexBounds" : {
+								"name_seq" : [
+									"[\"null-789\", \"null-789\"]"
+								],
+								"dt" : [
+									"[MaxKey, MinKey]"
+								]
+							}
+						},
+						{
+							"stage" : "IXSCAN",
+							"keyPattern" : {
+								"name_seq" : 1,
+								"dt" : 1
+							},
+							"indexName" : "name_seq_1_dt_1",
+							"isMultiKey" : false,
+							"multiKeyPaths" : {
+								"name_seq" : [ ],
+								"dt" : [ ]
+							},
+							"isUnique" : false,
+							"isSparse" : false,
+							"isPartial" : false,
+							"indexVersion" : 2,
+							"direction" : "backward",
+							"indexBounds" : {
+								"name_seq" : [
+									"[\"null-345\", \"null-345\"]"
+								],
+								"dt" : [
+									"[MaxKey, MinKey]"
+								]
+							}
+						},
+						{
+							"stage" : "IXSCAN",
+							"keyPattern" : {
+								"name_seq" : 1,
+								"dt" : 1
+							},
+							"indexName" : "name_seq_1_dt_1",
+							"isMultiKey" : false,
+							"multiKeyPaths" : {
+								"name_seq" : [ ],
+								"dt" : [ ]
+							},
+							"isUnique" : false,
+							"isSparse" : false,
+							"isPartial" : false,
+							"indexVersion" : 2,
+							"direction" : "backward",
+							"indexBounds" : {
+								"name_seq" : [
+									"[\"null-123\", \"null-123\"]"
+								],
+								"dt" : [
+									"[MaxKey, MinKey]"
+								]
+							}
+						},
+						{
+							"stage" : "IXSCAN",
+							"keyPattern" : {
+								"name_seq" : 1,
+								"dt" : 1
+							},
+							"indexName" : "name_seq_1_dt_1",
+							"isMultiKey" : false,
+							"multiKeyPaths" : {
+								"name_seq" : [ ],
+								"dt" : [ ]
+							},
+							"isUnique" : false,
+							"isSparse" : false,
+							"isPartial" : false,
+							"indexVersion" : 2,
+							"direction" : "backward",
+							"indexBounds" : {
+								"name_seq" : [
+									"[\"BBB\", \"BBB\"]"
+								],
+								"dt" : [
+									"[MaxKey, MinKey]"
+								]
+							}
+						},
+						{
+							"stage" : "IXSCAN",
+							"keyPattern" : {
+								"name_seq" : 1,
+								"dt" : 1
+							},
+							"indexName" : "name_seq_1_dt_1",
+							"isMultiKey" : false,
+							"multiKeyPaths" : {
+								"name_seq" : [ ],
+								"dt" : [ ]
+							},
+							"isUnique" : false,
+							"isSparse" : false,
+							"isPartial" : false,
+							"indexVersion" : 2,
+							"direction" : "backward",
+							"indexBounds" : {
+								"name_seq" : [
+									"[\"ABC\", \"ABC\"]"
+								],
+								"dt" : [
+									"[MaxKey, MinKey]"
+								]
+							}
+						},
+						{
+							"stage" : "IXSCAN",
+							"keyPattern" : {
+								"name_seq" : 1,
+								"dt" : 1
+							},
+							"indexName" : "name_seq_1_dt_1",
+							"isMultiKey" : false,
+							"multiKeyPaths" : {
+								"name_seq" : [ ],
+								"dt" : [ ]
+							},
+							"isUnique" : false,
+							"isSparse" : false,
+							"isPartial" : false,
+							"indexVersion" : 2,
+							"direction" : "backward",
+							"indexBounds" : {
+								"name_seq" : [
+									"[\"AAA\", \"AAA\"]"
+								],
+								"dt" : [
+									"[MaxKey, MinKey]"
+								]
+							}
+						}
+					]
+				}
+			}
+		},
+		"rejectedPlans" : [ ]
+	},
+	"executionStats" : {
+		"executionSuccess" : true,
+		"nReturned" : 627,
+		"executionTimeMillis" : 3,
+		"totalKeysExamined" : 688,
+		"totalDocsExamined" : 627,
+		"executionStages" : {
+			"stage" : "SUBPLAN",
+			"nReturned" : 627,
+			"executionTimeMillisEstimate" : 0,
+			"works" : 1323,
+			"advanced" : 627,
+			"needTime" : 695,
+			"needYield" : 0,
+			"saveState" : 10,
+			"restoreState" : 10,
+			"isEOF" : 1,
+			"invalidates" : 0,
+			"inputStage" : {
+				"stage" : "FETCH",
+				"nReturned" : 627,
+				"executionTimeMillisEstimate" : 0,
+				"works" : 1322,
+				"advanced" : 627,
+				"needTime" : 695,
+				"needYield" : 0,
+				"saveState" : 10,
+				"restoreState" : 10,
+				"isEOF" : 1,
+				"invalidates" : 0,
+				"docsExamined" : 627,
+				"alreadyHasObj" : 0,
+				"inputStage" : {
+					"stage" : "SORT_MERGE",
+					"nReturned" : 627,
+					"executionTimeMillisEstimate" : 0,
+					"works" : 1322,
+					"advanced" : 627,
+					"needTime" : 695,
+					"needYield" : 0,
+					"saveState" : 10,
+					"restoreState" : 10,
+					"isEOF" : 1,
+					"invalidates" : 0,
+					"sortPattern" : {
+						"dt" : -1
+					},
+					"dupsTested" : 688,
+					"dupsDropped" : 61,
+					"inputStages" : [
+						{
+							"stage" : "IXSCAN",
+							"nReturned" : 103,
+							"executionTimeMillisEstimate" : 0,
+							"works" : 104,
+							"advanced" : 103,
+							"needTime" : 0,
+							"needYield" : 0,
+							"saveState" : 10,
+							"restoreState" : 10,
+							"isEOF" : 1,
+							"invalidates" : 0,
+							"keyPattern" : {
+								"rand" : 1,
+								"dt" : 1
+							},
+							"indexName" : "rand_1_dt_1",
+							"isMultiKey" : false,
+							"multiKeyPaths" : {
+								"rand" : [ ],
+								"dt" : [ ]
+							},
+							"isUnique" : false,
+							"isSparse" : false,
+							"isPartial" : false,
+							"indexVersion" : 2,
+							"direction" : "backward",
+							"indexBounds" : {
+								"rand" : [
+									"[5.0, 5.0]"
+								],
+								"dt" : [
+									"[MaxKey, MinKey]"
+								]
+							},
+							"keysExamined" : 103,
+							"seeks" : 1,
+							"dupsTested" : 0,
+							"dupsDropped" : 0,
+							"seenInvalidated" : 0
+						},
+						{
+							"stage" : "IXSCAN",
+							"nReturned" : 12,
+							"executionTimeMillisEstimate" : 0,
+							"works" : 13,
+							"advanced" : 12,
+							"needTime" : 0,
+							"needYield" : 0,
+							"saveState" : 10,
+							"restoreState" : 10,
+							"isEOF" : 1,
+							"invalidates" : 0,
+							"keyPattern" : {
+								"name_seq" : 1,
+								"dt" : 1
+							},
+							"indexName" : "name_seq_1_dt_1",
+							"isMultiKey" : false,
+							"multiKeyPaths" : {
+								"name_seq" : [ ],
+								"dt" : [ ]
+							},
+							"isUnique" : false,
+							"isSparse" : false,
+							"isPartial" : false,
+							"indexVersion" : 2,
+							"direction" : "backward",
+							"indexBounds" : {
+								"name_seq" : [
+									"[\"null-789\", \"null-789\"]"
+								],
+								"dt" : [
+									"[MaxKey, MinKey]"
+								]
+							},
+							"keysExamined" : 12,
+							"seeks" : 1,
+							"dupsTested" : 0,
+							"dupsDropped" : 0,
+							"seenInvalidated" : 0
+						},
+						{
+							"stage" : "IXSCAN",
+							"nReturned" : 12,
+							"executionTimeMillisEstimate" : 0,
+							"works" : 13,
+							"advanced" : 12,
+							"needTime" : 0,
+							"needYield" : 0,
+							"saveState" : 10,
+							"restoreState" : 10,
+							"isEOF" : 1,
+							"invalidates" : 0,
+							"keyPattern" : {
+								"name_seq" : 1,
+								"dt" : 1
+							},
+							"indexName" : "name_seq_1_dt_1",
+							"isMultiKey" : false,
+							"multiKeyPaths" : {
+								"name_seq" : [ ],
+								"dt" : [ ]
+							},
+							"isUnique" : false,
+							"isSparse" : false,
+							"isPartial" : false,
+							"indexVersion" : 2,
+							"direction" : "backward",
+							"indexBounds" : {
+								"name_seq" : [
+									"[\"null-345\", \"null-345\"]"
+								],
+								"dt" : [
+									"[MaxKey, MinKey]"
+								]
+							},
+							"keysExamined" : 12,
+							"seeks" : 1,
+							"dupsTested" : 0,
+							"dupsDropped" : 0,
+							"seenInvalidated" : 0
+						},
+						{
+							"stage" : "IXSCAN",
+							"nReturned" : 12,
+							"executionTimeMillisEstimate" : 0,
+							"works" : 13,
+							"advanced" : 12,
+							"needTime" : 0,
+							"needYield" : 0,
+							"saveState" : 10,
+							"restoreState" : 10,
+							"isEOF" : 1,
+							"invalidates" : 0,
+							"keyPattern" : {
+								"name_seq" : 1,
+								"dt" : 1
+							},
+							"indexName" : "name_seq_1_dt_1",
+							"isMultiKey" : false,
+							"multiKeyPaths" : {
+								"name_seq" : [ ],
+								"dt" : [ ]
+							},
+							"isUnique" : false,
+							"isSparse" : false,
+							"isPartial" : false,
+							"indexVersion" : 2,
+							"direction" : "backward",
+							"indexBounds" : {
+								"name_seq" : [
+									"[\"null-123\", \"null-123\"]"
+								],
+								"dt" : [
+									"[MaxKey, MinKey]"
+								]
+							},
+							"keysExamined" : 12,
+							"seeks" : 1,
+							"dupsTested" : 0,
+							"dupsDropped" : 0,
+							"seenInvalidated" : 0
+						},
+						{
+							"stage" : "IXSCAN",
+							"nReturned" : 183,
+							"executionTimeMillisEstimate" : 0,
+							"works" : 184,
+							"advanced" : 183,
+							"needTime" : 0,
+							"needYield" : 0,
+							"saveState" : 10,
+							"restoreState" : 10,
+							"isEOF" : 1,
+							"invalidates" : 0,
+							"keyPattern" : {
+								"name_seq" : 1,
+								"dt" : 1
+							},
+							"indexName" : "name_seq_1_dt_1",
+							"isMultiKey" : false,
+							"multiKeyPaths" : {
+								"name_seq" : [ ],
+								"dt" : [ ]
+							},
+							"isUnique" : false,
+							"isSparse" : false,
+							"isPartial" : false,
+							"indexVersion" : 2,
+							"direction" : "backward",
+							"indexBounds" : {
+								"name_seq" : [
+									"[\"BBB\", \"BBB\"]"
+								],
+								"dt" : [
+									"[MaxKey, MinKey]"
+								]
+							},
+							"keysExamined" : 183,
+							"seeks" : 1,
+							"dupsTested" : 0,
+							"dupsDropped" : 0,
+							"seenInvalidated" : 0
+						},
+						{
+							"stage" : "IXSCAN",
+							"nReturned" : 183,
+							"executionTimeMillisEstimate" : 0,
+							"works" : 184,
+							"advanced" : 183,
+							"needTime" : 0,
+							"needYield" : 0,
+							"saveState" : 10,
+							"restoreState" : 10,
+							"isEOF" : 1,
+							"invalidates" : 0,
+							"keyPattern" : {
+								"name_seq" : 1,
+								"dt" : 1
+							},
+							"indexName" : "name_seq_1_dt_1",
+							"isMultiKey" : false,
+							"multiKeyPaths" : {
+								"name_seq" : [ ],
+								"dt" : [ ]
+							},
+							"isUnique" : false,
+							"isSparse" : false,
+							"isPartial" : false,
+							"indexVersion" : 2,
+							"direction" : "backward",
+							"indexBounds" : {
+								"name_seq" : [
+									"[\"ABC\", \"ABC\"]"
+								],
+								"dt" : [
+									"[MaxKey, MinKey]"
+								]
+							},
+							"keysExamined" : 183,
+							"seeks" : 1,
+							"dupsTested" : 0,
+							"dupsDropped" : 0,
+							"seenInvalidated" : 0
+						},
+						{
+							"stage" : "IXSCAN",
+							"nReturned" : 183,
+							"executionTimeMillisEstimate" : 0,
+							"works" : 184,
+							"advanced" : 183,
+							"needTime" : 0,
+							"needYield" : 0,
+							"saveState" : 10,
+							"restoreState" : 10,
+							"isEOF" : 1,
+							"invalidates" : 0,
+							"keyPattern" : {
+								"name_seq" : 1,
+								"dt" : 1
+							},
+							"indexName" : "name_seq_1_dt_1",
+							"isMultiKey" : false,
+							"multiKeyPaths" : {
+								"name_seq" : [ ],
+								"dt" : [ ]
+							},
+							"isUnique" : false,
+							"isSparse" : false,
+							"isPartial" : false,
+							"indexVersion" : 2,
+							"direction" : "backward",
+							"indexBounds" : {
+								"name_seq" : [
+									"[\"AAA\", \"AAA\"]"
+								],
+								"dt" : [
+									"[MaxKey, MinKey]"
+								]
+							},
+							"keysExamined" : 183,
+							"seeks" : 1,
+							"dupsTested" : 0,
+							"dupsDropped" : 0,
+							"seenInvalidated" : 0
+						}
+					]
+				}
+			}
+		}
+	},
+	"serverInfo" : {
+		"host" : "Kens-MBP",
+		"port" : 27017,
+		"version" : "3.4.10",
+		"gitVersion" : "078f28920cb24de0dd479b5ea6c66c644f6326e9"
+	},
+	"ok" : 1
+}

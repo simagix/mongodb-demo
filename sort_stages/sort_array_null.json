@@ -1,0 +1,498 @@
+{
+	"queryPlanner" : {
+		"plannerVersion" : 1,
+		"namespace" : "WSDB.forms",
+		"indexFilterSet" : false,
+		"parsedQuery" : {
+			"$or" : [
+				{
+					"tags" : {
+						"$elemMatch" : {
+							"$and" : [
+								{
+									"name" : {
+										"$eq" : null
+									}
+								},
+								{
+									"seq" : {
+										"$in" : [
+											"123",
+											"345",
+											"789"
+										]
+									}
+								}
+							]
+						}
+					}
+				},
+				{
+					"tags" : {
+						"$elemMatch" : {
+							"name" : {
+								"$in" : [
+									"AAA",
+									"ABC",
+									"BBB"
+								]
+							}
+						}
+					}
+				},
+				{
+					"rand" : {
+						"$eq" : 5
+					}
+				}
+			]
+		},
+		"winningPlan" : {
+			"stage" : "SUBPLAN",
+			"inputStage" : {
+				"stage" : "SORT",
+				"sortPattern" : {
+					"dt" : -1
+				},
+				"inputStage" : {
+					"stage" : "SORT_KEY_GENERATOR",
+					"inputStage" : {
+						"stage" : "FETCH",
+						"inputStage" : {
+							"stage" : "OR",
+							"inputStages" : [
+								{
+									"stage" : "FETCH",
+									"filter" : {
+										"tags" : {
+											"$elemMatch" : {
+												"$and" : [
+													{
+														"name" : {
+															"$eq" : null
+														}
+													},
+													{
+														"seq" : {
+															"$in" : [
+																"123",
+																"345",
+																"789"
+															]
+														}
+													}
+												]
+											}
+										}
+									},
+									"inputStage" : {
+										"stage" : "IXSCAN",
+										"keyPattern" : {
+											"tags.name" : 1,
+											"tags.seq" : 1,
+											"dt" : 1
+										},
+										"indexName" : "tags.name_1_tags.seq_1_dt_1",
+										"isMultiKey" : false,
+										"multiKeyPaths" : {
+											"tags.name" : [ ],
+											"tags.seq" : [ ],
+											"dt" : [ ]
+										},
+										"isUnique" : false,
+										"isSparse" : false,
+										"isPartial" : false,
+										"indexVersion" : 2,
+										"direction" : "forward",
+										"indexBounds" : {
+											"tags.name" : [
+												"[null, null]"
+											],
+											"tags.seq" : [
+												"[\"123\", \"123\"]",
+												"[\"345\", \"345\"]",
+												"[\"789\", \"789\"]"
+											],
+											"dt" : [
+												"[MinKey, MaxKey]"
+											]
+										}
+									}
+								},
+								{
+									"stage" : "FETCH",
+									"filter" : {
+										"tags" : {
+											"$elemMatch" : {
+												"name" : {
+													"$in" : [
+														"AAA",
+														"ABC",
+														"BBB"
+													]
+												}
+											}
+										}
+									},
+									"inputStage" : {
+										"stage" : "IXSCAN",
+										"keyPattern" : {
+											"tags.name" : 1,
+											"tags.seq" : 1,
+											"dt" : 1
+										},
+										"indexName" : "tags.name_1_tags.seq_1_dt_1",
+										"isMultiKey" : false,
+										"multiKeyPaths" : {
+											"tags.name" : [ ],
+											"tags.seq" : [ ],
+											"dt" : [ ]
+										},
+										"isUnique" : false,
+										"isSparse" : false,
+										"isPartial" : false,
+										"indexVersion" : 2,
+										"direction" : "forward",
+										"indexBounds" : {
+											"tags.name" : [
+												"[\"AAA\", \"AAA\"]",
+												"[\"ABC\", \"ABC\"]",
+												"[\"BBB\", \"BBB\"]"
+											],
+											"tags.seq" : [
+												"[MinKey, MaxKey]"
+											],
+											"dt" : [
+												"[MinKey, MaxKey]"
+											]
+										}
+									}
+								},
+								{
+									"stage" : "IXSCAN",
+									"keyPattern" : {
+										"rand" : 1,
+										"dt" : 1
+									},
+									"indexName" : "rand_1_dt_1",
+									"isMultiKey" : false,
+									"multiKeyPaths" : {
+										"rand" : [ ],
+										"dt" : [ ]
+									},
+									"isUnique" : false,
+									"isSparse" : false,
+									"isPartial" : false,
+									"indexVersion" : 2,
+									"direction" : "forward",
+									"indexBounds" : {
+										"rand" : [
+											"[5.0, 5.0]"
+										],
+										"dt" : [
+											"[MinKey, MaxKey]"
+										]
+									}
+								}
+							]
+						}
+					}
+				}
+			}
+		},
+		"rejectedPlans" : [ ]
+	},
+	"executionStats" : {
+		"executionSuccess" : true,
+		"nReturned" : 627,
+		"executionTimeMillis" : 12,
+		"totalKeysExamined" : 692,
+		"totalDocsExamined" : 1212,
+		"executionStages" : {
+			"stage" : "SUBPLAN",
+			"nReturned" : 627,
+			"executionTimeMillisEstimate" : 12,
+			"works" : 1322,
+			"advanced" : 627,
+			"needTime" : 694,
+			"needYield" : 0,
+			"saveState" : 11,
+			"restoreState" : 11,
+			"isEOF" : 1,
+			"invalidates" : 0,
+			"inputStage" : {
+				"stage" : "SORT",
+				"nReturned" : 627,
+				"executionTimeMillisEstimate" : 12,
+				"works" : 1321,
+				"advanced" : 627,
+				"needTime" : 694,
+				"needYield" : 0,
+				"saveState" : 11,
+				"restoreState" : 11,
+				"isEOF" : 1,
+				"invalidates" : 0,
+				"sortPattern" : {
+					"dt" : -1
+				},
+				"memUsage" : 63094,
+				"memLimit" : 33554432,
+				"inputStage" : {
+					"stage" : "SORT_KEY_GENERATOR",
+					"nReturned" : 627,
+					"executionTimeMillisEstimate" : 12,
+					"works" : 694,
+					"advanced" : 627,
+					"needTime" : 66,
+					"needYield" : 0,
+					"saveState" : 11,
+					"restoreState" : 11,
+					"isEOF" : 1,
+					"invalidates" : 0,
+					"inputStage" : {
+						"stage" : "FETCH",
+						"nReturned" : 627,
+						"executionTimeMillisEstimate" : 12,
+						"works" : 693,
+						"advanced" : 627,
+						"needTime" : 65,
+						"needYield" : 0,
+						"saveState" : 11,
+						"restoreState" : 11,
+						"isEOF" : 1,
+						"invalidates" : 0,
+						"docsExamined" : 627,
+						"alreadyHasObj" : 585,
+						"inputStage" : {
+							"stage" : "OR",
+							"nReturned" : 627,
+							"executionTimeMillisEstimate" : 12,
+							"works" : 693,
+							"advanced" : 627,
+							"needTime" : 65,
+							"needYield" : 0,
+							"saveState" : 11,
+							"restoreState" : 11,
+							"isEOF" : 1,
+							"invalidates" : 0,
+							"dupsTested" : 688,
+							"dupsDropped" : 61,
+							"recordIdsForgotten" : 0,
+							"inputStages" : [
+								{
+									"stage" : "FETCH",
+									"filter" : {
+										"tags" : {
+											"$elemMatch" : {
+												"$and" : [
+													{
+														"name" : {
+															"$eq" : null
+														}
+													},
+													{
+														"seq" : {
+															"$in" : [
+																"123",
+																"345",
+																"789"
+															]
+														}
+													}
+												]
+											}
+										}
+									},
+									"nReturned" : 36,
+									"executionTimeMillisEstimate" : 12,
+									"works" : 39,
+									"advanced" : 36,
+									"needTime" : 2,
+									"needYield" : 0,
+									"saveState" : 11,
+									"restoreState" : 11,
+									"isEOF" : 1,
+									"invalidates" : 0,
+									"docsExamined" : 36,
+									"alreadyHasObj" : 0,
+									"inputStage" : {
+										"stage" : "IXSCAN",
+										"nReturned" : 36,
+										"executionTimeMillisEstimate" : 0,
+										"works" : 39,
+										"advanced" : 36,
+										"needTime" : 2,
+										"needYield" : 0,
+										"saveState" : 11,
+										"restoreState" : 11,
+										"isEOF" : 1,
+										"invalidates" : 0,
+										"keyPattern" : {
+											"tags.name" : 1,
+											"tags.seq" : 1,
+											"dt" : 1
+										},
+										"indexName" : "tags.name_1_tags.seq_1_dt_1",
+										"isMultiKey" : false,
+										"multiKeyPaths" : {
+											"tags.name" : [ ],
+											"tags.seq" : [ ],
+											"dt" : [ ]
+										},
+										"isUnique" : false,
+										"isSparse" : false,
+										"isPartial" : false,
+										"indexVersion" : 2,
+										"direction" : "forward",
+										"indexBounds" : {
+											"tags.name" : [
+												"[null, null]"
+											],
+											"tags.seq" : [
+												"[\"123\", \"123\"]",
+												"[\"345\", \"345\"]",
+												"[\"789\", \"789\"]"
+											],
+											"dt" : [
+												"[MinKey, MaxKey]"
+											]
+										},
+										"keysExamined" : 39,
+										"seeks" : 3,
+										"dupsTested" : 0,
+										"dupsDropped" : 0,
+										"seenInvalidated" : 0
+									}
+								},
+								{
+									"stage" : "FETCH",
+									"filter" : {
+										"tags" : {
+											"$elemMatch" : {
+												"name" : {
+													"$in" : [
+														"AAA",
+														"ABC",
+														"BBB"
+													]
+												}
+											}
+										}
+									},
+									"nReturned" : 549,
+									"executionTimeMillisEstimate" : 0,
+									"works" : 550,
+									"advanced" : 549,
+									"needTime" : 0,
+									"needYield" : 0,
+									"saveState" : 11,
+									"restoreState" : 11,
+									"isEOF" : 1,
+									"invalidates" : 0,
+									"docsExamined" : 549,
+									"alreadyHasObj" : 0,
+									"inputStage" : {
+										"stage" : "IXSCAN",
+										"nReturned" : 549,
+										"executionTimeMillisEstimate" : 0,
+										"works" : 550,
+										"advanced" : 549,
+										"needTime" : 0,
+										"needYield" : 0,
+										"saveState" : 11,
+										"restoreState" : 11,
+										"isEOF" : 1,
+										"invalidates" : 0,
+										"keyPattern" : {
+											"tags.name" : 1,
+											"tags.seq" : 1,
+											"dt" : 1
+										},
+										"indexName" : "tags.name_1_tags.seq_1_dt_1",
+										"isMultiKey" : false,
+										"multiKeyPaths" : {
+											"tags.name" : [ ],
+											"tags.seq" : [ ],
+											"dt" : [ ]
+										},
+										"isUnique" : false,
+										"isSparse" : false,
+										"isPartial" : false,
+										"indexVersion" : 2,
+										"direction" : "forward",
+										"indexBounds" : {
+											"tags.name" : [
+												"[\"AAA\", \"AAA\"]",
+												"[\"ABC\", \"ABC\"]",
+												"[\"BBB\", \"BBB\"]"
+											],
+											"tags.seq" : [
+												"[MinKey, MaxKey]"
+											],
+											"dt" : [
+												"[MinKey, MaxKey]"
+											]
+										},
+										"keysExamined" : 550,
+										"seeks" : 1,
+										"dupsTested" : 0,
+										"dupsDropped" : 0,
+										"seenInvalidated" : 0
+									}
+								},
+								{
+									"stage" : "IXSCAN",
+									"nReturned" : 103,
+									"executionTimeMillisEstimate" : 0,
+									"works" : 104,
+									"advanced" : 103,
+									"needTime" : 0,
+									"needYield" : 0,
+									"saveState" : 11,
+									"restoreState" : 11,
+									"isEOF" : 1,
+									"invalidates" : 0,
+									"keyPattern" : {
+										"rand" : 1,
+										"dt" : 1
+									},
+									"indexName" : "rand_1_dt_1",
+									"isMultiKey" : false,
+									"multiKeyPaths" : {
+										"rand" : [ ],
+										"dt" : [ ]
+									},
+									"isUnique" : false,
+									"isSparse" : false,
+									"isPartial" : false,
+									"indexVersion" : 2,
+									"direction" : "forward",
+									"indexBounds" : {
+										"rand" : [
+											"[5.0, 5.0]"
+										],
+										"dt" : [
+											"[MinKey, MaxKey]"
+										]
+									},
+									"keysExamined" : 103,
+									"seeks" : 1,
+									"dupsTested" : 0,
+									"dupsDropped" : 0,
+									"seenInvalidated" : 0
+								}
+							]
+						}
+					}
+				}
+			}
+		}
+	},
+	"serverInfo" : {
+		"host" : "Kens-MBP",
+		"port" : 27017,
+		"version" : "3.4.10",
+		"gitVersion" : "078f28920cb24de0dd479b5ea6c66c644f6326e9"
+	},
+	"ok" : 1
+}
