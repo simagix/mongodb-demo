@@ -1,18 +1,21 @@
 <h3>MongoDB Sort Stages Demo</h3>
 
-Demo different indexes affecting performance on queries with sorting.  Use a compound index with the sorting parameter in the index can prevent MongoDB engine to perform sorting in memory. 
+In this demo, two use cases are discussed.  The first case demos performance impacts from adding index(es) as well as single field vs. compound index.  The other case discusses how adding additional data field can improve query performance.  
+
+When using sorting, `mongod` has different stages, and they are `SORT_MERGE` vs. `SORT`.  Ideally, it's more efficient to *merge* results from sorted data than fetching data into memory to sort.  In other words, we want to examining index (keys) only and avoid examining documents if possible.  
+
 
 ### 1. Use Case: Simple Query and Sort
-Demo compound index impacting `find` and `sort`.
+The use case 1 queries on `{a : 1}` and sorts by `{b: 1}`.  Using a compound index of `{a: 1, b: 1}` can support both query and sorting.
 
 #### 1.1. Populate Data
 Populate a collection with documents having two fields _a_ and _b_.
 
 ```
-> use SORTDB
-> var bulk = db.values.initializeUnorderedBulkOp();
-> for(i = 0; i < 1000; i++) { bulk.insert({ a: Math.round(Math.random() * 100), b: Math.round(Math.random() * 10) }); }
-> bulk.execute()
+use WSDB
+var bulk = db.values.initializeUnorderedBulkOp();
+for(i = 0; i < 1000; i++) { bulk.insert({ a: Math.round(Math.random() * 100), b: Math.round(Math.random() * 10) }); }
+bulk.execute()
 BulkWriteResult({
 	"writeErrors" : [ ],
 	"writeConcernErrors" : [ ],
@@ -29,11 +32,11 @@ BulkWriteResult({
 Find all documents with _a_ equals to 25 or 50, and sorted by _b_ ascendingly.
 
 ```
-> db.values.explain("executionStats").find( { a: {$in: [25, 50]} } ).sort({ b: 1 })
+db.values.explain("executionStats").find( { a: {$in: [25, 50]} } ).sort({ b: 1 })
 ```
 
 #### 1.2.1. No Index
-Execute the query without any index on the collection, and it results a full collection scan (_COLLSCAN_).
+Execute the query without any index on the collection, and it enters a full collection scan stage (_COLLSCAN_).
 
 ```
 version : 3.4.9
@@ -67,16 +70,10 @@ SORT
 ```
 
 #### 1.2.2. Use a Single Field Index
-Execute the query with an index of `{ a: 1 }` on the collection, it utilizes the index (_IXSCAN_ stage) for search but loads data in memory before sorting.
+Execute the query with an index of `{ a: 1 }` on the collection, it utilizes the index (_IXSCAN_ stage) for search but has to fetch data in memory before sorting.
 
 ```
-> db.values.createIndex( { a: 1 } )
-{
-	"createdCollectionAutomatically" : false,
-	"numIndexesBefore" : 1,
-	"numIndexesAfter" : 2,
-	"ok" : 1
-}
+db.values.createIndex( { a: 1 } )
 ```
 
 `Explain()` result:
@@ -110,13 +107,7 @@ SORT
 Adding a compound index `{ a: 1, b: 1}` then executing the query, it not only use the index to search, but also merge data without fetching them into memory to sort.
 
 ```
-> db.values.createIndex( { a: 1, b: 1 } )
-{
-	"createdCollectionAutomatically" : false,
-	"numIndexesBefore" : 2,
-	"numIndexesAfter" : 3,
-	"ok" : 1
-}
+db.values.createIndex( { a: 1, b: 1 } )
 ```
 
 `Explain()` result:
