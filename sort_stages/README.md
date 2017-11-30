@@ -139,7 +139,264 @@ FETCH
 .  .  |  - index used : a_1_b_1
 ```
 
-### 2. Use Case: Addtional Field Improving Performance
+
+### 2. Multi-keys Query
+This demos multi-key indexes, the use of `$elemMatch`, and different indexes affecting performance. 
+
+#### 2.1. Use Case
+Find all documents with both _a_ and _b_ equal 5 or both _a_ and _b_ equal to 8, and sorted by _dt_ descendingly.
+```
+> db.multikeys.explain("executionStats").find(
+    { stats: {$elemMatch:  {$or: [{a: 5, b: 5}, {a: 8, b: 8}] } } }
+).sort( { dt: -1} )
+```
+
+#### 2.2. Populate Data
+Populate a collection with documents having an array of sub-documents and a date/time field.
+
+```
+use WSDB
+var bulk = db.multikeys.initializeUnorderedBulkOp()
+for(i = 0; i < 1000; i++) {
+  bulk.insert({  stats: [
+      {a: Math.round(Math.random()*10), 
+          b: Math.round(Math.random()*10)},
+      {c: Math.round(Math.random()*10), 
+          d: Math.round(Math.random()*10)}
+  ],
+  dt: new Date() })
+}
+bulk.execute()
+```
+#### 2.3. No Index
+Execute the query without any index on the collection, and it results a full collection scan (`COLLSCAN`).
+
+```
+version : 3.4.9
+-- FILTER --
+{
+   "stats": {
+      "$elemMatch": {
+         "$or": [
+            {
+               "$and": [
+                  {
+                     "a": {
+                        "$eq": 5
+                     }
+                  },
+                  {
+                     "b": {
+                        "$eq": 5
+                     }
+                  }
+               ]
+            },
+            {
+               "$and": [
+                  {
+                     "a": {
+                        "$eq": 8
+                     }
+                  },
+                  {
+                     "b": {
+                        "$eq": 8
+                     }
+                  }
+               ]
+            }
+         ]
+      }
+   }
+}
+
+-- SUMMARY --
+executionTimeMillis : 1
+nReturned : 16
+totalKeysExamined : 0
+totalDocsExamined : 1000
+
+-- STAGES --
+SORT
+|  - executionTimeMillisEstimate : 0
+|  - nReturned : 16
++--SORT_KEY_GENERATOR
+.  |  - executionTimeMillisEstimate : 0
+.  |  - nReturned : 16
+.  +--COLLSCAN
+.  .  |  - executionTimeMillisEstimate : 0
+.  .  |  - nReturned : 16
+.  .  |  - docsExamined : 1000
+```
+
+#### 2.4. Multi-key Index
+##### 2.4.1. SORT Stage
+Create a compound index.
+
+```
+db.multikeys.createIndex({ "stats.a": 1, "stats.b": 1 })
+```
+
+Execute the query with an index of `{ "stats.a": 1, "stats.b": 1 }` on the collection, it utilizes the index (`IXSCAN` stage) for search but loads data in memory before sorting.
+
+```
+-- SUMMARY --
+executionTimeMillis : 9
+nReturned : 16
+totalKeysExamined : 16
+totalDocsExamined : 16
+
+-- STAGES --
+SORT
+|  - executionTimeMillisEstimate : 0
+|  - nReturned : 16
++--SORT_KEY_GENERATOR
+.  |  - executionTimeMillisEstimate : 0
+.  |  - nReturned : 16
+.  +--FETCH
+.  .  |  - executionTimeMillisEstimate : 0
+.  .  |  - nReturned : 16
+.  .  |  - docsExamined : 16
+.  .  +--OR
+.  .  .  |  - executionTimeMillisEstimate : 0
+.  .  .  |  - nReturned : 16
+.  .  .  +--IXSCAN
+.  .  .  .  |  - executionTimeMillisEstimate : 0
+.  .  .  .  |  - nReturned : 9
+.  .  .  .  |  - keysExamined : 9
+.  .  .  .  |  - index used : stats.a_1_stats.b_1
+.  .  .  +--IXSCAN
+.  .  .  .  |  - executionTimeMillisEstimate : 0
+.  .  .  .  |  - nReturned : 7
+.  .  .  .  |  - keysExamined : 7
+.  .  .  .  |  - index used : stats.a_1_stats.b_1
+```
+
+##### 2.4.2. SORT_MERGE Stage
+Adding a compound index 
+
+```
+db.multikeys.createIndex({ "stats.a": 1, "stats.b": 1, "dt": 1 })
+```
+
+Execute the same query, it not only uses the index to search, but also merges data without fetching them into memory to sort.
+
+```
+-- SUMMARY --
+executionTimeMillis : 1
+nReturned : 16
+totalKeysExamined : 16
+totalDocsExamined : 16
+
+-- STAGES --
+FETCH
+|  - executionTimeMillisEstimate : 0
+|  - nReturned : 16
+|  - docsExamined : 16
++--SORT_MERGE
+.  |  - executionTimeMillisEstimate : 0
+.  |  - nReturned : 16
+.  +--IXSCAN
+.  .  |  - executionTimeMillisEstimate : 0
+.  .  |  - nReturned : 9
+.  .  |  - keysExamined : 9
+.  .  |  - index used : stats.a_1_stats.b_1_dt_1
+.  +--IXSCAN
+.  .  |  - executionTimeMillisEstimate : 0
+.  .  |  - nReturned : 7
+.  .  |  - keysExamined : 7
+.  .  |  - index used : stats.a_1_stats.b_1_dt_1
+```
+
+#### 2.5. Unequal Number of Fields
+Remove _b_ from document where _a_ equals to 1.
+
+```
+db.multikeys.updateMany({ "stats.a": 1 }, { $set: { "stats.$": { "a": 1}}} )
+```
+
+Create an index on _b_.
+
+```
+db.multikeys.createIndex({ b: 1 })
+```
+
+Change the query to
+
+```
+db.multikeys.explain("executionStats").find(
+    { stats: {$elemMatch:  {$or: [{a: 5, b: 5}, {b: null}] } } }
+).sort( { dt: -1} )
+```
+
+The result shows data has to be sorted in the memory.  Note that `OR` stage is in place instead of `SORT_MERGE`.
+
+```
+version : 3.4.9
+-- FILTER --
+{
+   "stats": {
+      "$elemMatch": {
+         "$or": [
+            {
+               "$and": [
+                  {
+                     "a": {
+                        "$eq": 5
+                     }
+                  },
+                  {
+                     "b": {
+                        "$eq": 5
+                     }
+                  }
+               ]
+            },
+            {
+               "b": {
+                  "$eq": null
+               }
+            }
+         ]
+      }
+   }
+}
+
+-- SUMMARY --
+executionTimeMillis : 16
+nReturned : 1000
+totalKeysExamined : 1009
+totalDocsExamined : 1000
+
+-- STAGES --
+SORT
+|  - executionTimeMillisEstimate : 0
+|  - nReturned : 1000
++--SORT_KEY_GENERATOR
+.  |  - executionTimeMillisEstimate : 0
+.  |  - nReturned : 1000
+.  +--FETCH
+.  .  |  - executionTimeMillisEstimate : 0
+.  .  |  - nReturned : 1000
+.  .  |  - docsExamined : 1000
+.  .  +--OR
+.  .  .  |  - executionTimeMillisEstimate : 0
+.  .  .  |  - nReturned : 1000
+.  .  .  +--IXSCAN
+.  .  .  .  |  - executionTimeMillisEstimate : 0
+.  .  .  .  |  - nReturned : 9
+.  .  .  .  |  - keysExamined : 9
+.  .  .  .  |  - index used : stats.a_1_stats.b_1_dt_1
+.  .  .  +--IXSCAN
+.  .  .  .  |  - executionTimeMillisEstimate : 0
+.  .  .  .  |  - nReturned : 1000
+.  .  .  .  |  - keysExamined : 1000
+.  .  .  .  |  - index used : stats.b_1
+```
+
+
+### 3. Use Case: Addtional Field Improving Performance
 Fetching data into memory to sort degrades performane.  The goal is to utilize `SORT_MERGE` stage when possible.  However, querying NULL values from an array using `$elemMatch` can force `mongod` to use `OR` and `SORT` stages, which requires fetching data before sorting.  For example, consider a document structure as follows:
 
 ```
@@ -151,7 +408,7 @@ Fetching data into memory to sort degrades performane.  The goal is to utilize `
 }
 ```
 
-#### 2.1. Populate Date
+#### 3.1. Populate Date
 ```
 names = ["AAA", "ABC", "BBB", "BCB", "CCC"]
 seqs = ["123", "345", "789", "111", "222", "333", "555"]
@@ -173,7 +430,7 @@ db.forms.createIndex({rand: 1, dt: 1})
 db.forms.createIndex({"tags.name": 1, "tags.seq": 1, dt: 1})
 ```
 
-#### 2.2. Query Null Values in an Array
+#### 3.2. Query Null Values in an Array
 If the query filter is 
 
 ```
@@ -288,7 +545,7 @@ SUBPLAN
 .  .  .  .  .  |  - index used : rand_1_dt_1
 ```
 
-#### 2.3. Simplify Query by Combining Fields
+#### 3.3. Simplify Query by Combining Fields
 Add a field call name_seq as a combined value of `name` and `seq` as
 
 ```
@@ -406,7 +663,7 @@ SUBPLAN
 .  .  .  |  - index used : name_seq_1_dt_1
 ```
 
-#### 2.4. Improvement
+#### 3.4. Improvement
 We can see the improvment when `SORT_MERGE` is used vs. `SORT`.
 
 | stage | time (ms) | # returned | keys examined | docs examined |
