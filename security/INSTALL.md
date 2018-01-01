@@ -28,7 +28,7 @@ SELINUX=disabled
 Reboot the instance.
 
 ## Disable Transparent Huge Pages
-To permanently [disable THP](https://docs.mongodb.com/manual/tutorial/transparent-huge-pages/)[^disable THP], create the following file at */etc/init.d/disable-transparent-hugepages*:
+To permanently [disable THP](https://docs.mongodb.com/manual/tutorial/transparent-huge-pages/), create the following file at */etc/init.d/disable-transparent-hugepages*:
 
 [^disable THP]: https://docs.mongodb.com/manual/tutorial/transparent-huge-pages/
 
@@ -84,12 +84,12 @@ echo never > /sys/kernel/mm/transparent_hugepage/defrag
 
 ## Install MongoDB
 ### Database Path
-Create a database volume and mount it at /data by following [Production Notes](https://docs.mongodb.com/manual/administration/production-notes/)[^Production Notes]
+Create a database volume and mount it at /data by following [Production Notes](https://docs.mongodb.com/manual/administration/production-notes/)
 
 [^Production Notes]: https://docs.mongodb.com/manual/administration/production-notes/
 
 ### Installation
-Follow [Install MongoDB Enterprise on Red Hat Enterprise or CentOS](https://docs.mongodb.com/manual/tutorial/install-mongodb-enterprise-on-red-hat/)[^Install MongoDB Enterprise] to install latest version of MongoDB 3.6.  First, create yum repo for MongoDB 3.6 Enterprise edition.
+Follow [Install MongoDB Enterprise on Red Hat Enterprise or CentOS](https://docs.mongodb.com/manual/tutorial/install-mongodb-enterprise-on-red-hat/) to install latest version of MongoDB 3.6.  First, create yum repo for MongoDB 3.6 Enterprise edition.
 
 [^Install MongoDB Enterprise]: https://docs.mongodb.com/manual/tutorial/install-mongodb-enterprise-on-red-hat/
 
@@ -130,7 +130,7 @@ storage:
 ```
 
 ### Increase nproc and nofile of ulimit
-[Unix ulimit Settings](https://docs.mongodb.com/manual/reference/ulimit/)[^Unix ulimit Settings]
+[Unix ulimit Settings](https://docs.mongodb.com/manual/reference/ulimit/)
 
 [^Unix ulimit Settings]: https://docs.mongodb.com/manual/reference/ulimit/
 
@@ -167,8 +167,8 @@ sudo service mongod start
 ```
 
 ## Deploy a Replica Set
-- [Deploy a Replica Set](https://docs.mongodb.com/manual/tutorial/deploy-replica-set/)[^Deploy a Replica Set]
-- [Deploy New Replica Set With Keyfile Access Control](https://docs.mongodb.com/manual/tutorial/deploy-replica-set-with-keyfile-access-control/#deploy-repl-set-with-auth)[^Deploy New Replica Set With Keyfile Access Control]
+- [Deploy a Replica Set](https://docs.mongodb.com/manual/tutorial/deploy-replica-set/)
+- [Deploy New Replica Set With Keyfile Access Control](https://docs.mongodb.com/manual/tutorial/deploy-replica-set-with-keyfile-access-control/#deploy-repl-set-with-auth)
 
 [^Deploy a Replica Set]: https://docs.mongodb.com/manual/tutorial/deploy-replica-set/
 [^Deploy New Replica Set With Keyfile Access Control]: https://docs.mongodb.com/manual/tutorial/deploy-replica-set-with-keyfile-access-control/#deploy-repl-set-with-auth/
@@ -220,8 +220,8 @@ Test connection.
 ```
 
 ## Enable Authentication
-- [Security Checklist](https://docs.mongodb.com/manual/administration/security-checklist/)[^Security Checklist]
-- [Enable Auth](https://docs.mongodb.com/manual/tutorial/enable-authentication/)[^Enable Auth]
+- [Security Checklist](https://docs.mongodb.com/manual/administration/security-checklist/)
+- [Enable Auth](https://docs.mongodb.com/manual/tutorial/enable-authentication/)
 
 [^Security Checklist]: https://docs.mongodb.com/manual/administration/security-checklist/
 [^Enable Auth]: https://docs.mongodb.com/manual/tutorial/enable-authentication/
@@ -264,7 +264,7 @@ sudo service mongod restart
 ```
 
 ### Manage Users and Roles
-[Manage Users and Roles](https://docs.mongodb.com/manual/tutorial/manage-users-and-roles/)[^Manage Users and Roles]
+[Manage Users and Roles](https://docs.mongodb.com/manual/tutorial/manage-users-and-roles/)
 
 [^Manage Users and Roles]: https://docs.mongodb.com/manual/tutorial/manage-users-and-roles/
 Create an *super* application user.
@@ -292,10 +292,10 @@ db.createUser(
 ```
 
 ## Transport Encryption
-- [Encryption](https://docs.mongodb.com/manual/core/security-encryption/)[^Encryption]
-- [Transport Encryption](https://docs.mongodb.com/manual/core/security-transport-encryption/)[^Transport Encryption]
-- [Configure mongod and mongos for TLS/SSL](https://docs.mongodb.com/manual/tutorial/configure-ssl/)[^Configure mongod and mongos for TLS/SSL]
-- [TLS/SSL Configuration for Clients](https://docs.mongodb.com/manual/tutorial/configure-ssl-clients/)[^TLS/SSL Configuration for Clients]
+- [Encryption](https://docs.mongodb.com/manual/core/security-encryption/)
+- [Transport Encryption](https://docs.mongodb.com/manual/core/security-transport-encryption/)
+- [Configure mongod and mongos for TLS/SSL](https://docs.mongodb.com/manual/tutorial/configure-ssl/)
+- [TLS/SSL Configuration for Clients](https://docs.mongodb.com/manual/tutorial/configure-ssl-clients/)
 
 [^Encryption]: https://docs.mongodb.com/manual/core/security-encryption/
 [^Transport Encryption]: https://docs.mongodb.com/manual/core/security-transport-encryption/
@@ -377,7 +377,7 @@ net:
 ```
 
 ### Upgrade a Cluster to TLS/SSL
-After completing instructions from [Upgrade a Cluster to user TLS/SSL](https://docs.mongodb.com/manual/tutorial/upgrade-cluster-to-ssl/)[^Upgrade a Cluster to user TLS/SSL], restart `mongod`, connect with `mongo` shell.
+After completing instructions from [Upgrade a Cluster to user TLS/SSL](https://docs.mongodb.com/manual/tutorial/upgrade-cluster-to-ssl/), restart `mongod`, connect with `mongo` shell.
 
 [^Upgrade a Cluster to user TLS/SSL]: https://docs.mongodb.com/manual/tutorial/upgrade-cluster-to-ssl/
 
@@ -415,7 +415,7 @@ mongo mongodb://mongoadm:secret@ec2-54-166-247-62.compute-1.amazonaws.com,ec2-54
 ```
 
 ## Encryption at Rest
-[Encryption at Rest](https://docs.mongodb.com/manual/core/security-encryption-at-rest/)[^Encryption at Rest] includes the following steps:
+[Encryption at Rest](https://docs.mongodb.com/manual/core/security-encryption-at-rest/) includes the following steps:
 
 [^Encryption at Rest]: https://docs.mongodb.com/manual/core/security-encryption-at-rest/
 
