@@ -108,7 +108,7 @@ enabled=1
 gpgkey=https://www.mongodb.org/static/pgp/server-3.6.asc
 ```
 
-The packages below will be installed.
+Install MongoDB Enterprise edition.
 
 ```
 sudo yum install -y mongodb-enterprise
@@ -531,5 +531,47 @@ replication:
 #auditLog:
 
 #snmp:
+```
+
+### Files
+```
+/etc
+├── fstab
+├── hosts
+├── init.d -> rc.d/init.d
+├── mongod.conf
+├── rc.d
+│   ├── init.d
+│   │   ├── disable-transparent-hugepages
+├── security
+│   ├── limits.d
+│   │   ├── 20-nofile.conf
+│   │   └── 20-nproc.conf
+├── selinux
+│   ├── config
+├── ssl
+│   ├── ca.pem
+│   ├── enc-keyfile
+│   ├── mongodb-cert.crt
+│   ├── mongodb-cert.key
+│   ├── mongodb.pem
+│   └── rs0-dev.keyfile
+└── yum.repos.d
+    └── mongodb-enterprise.repo
+
+/data
+└── db
+    ├── collection-0--52200788745683527.wt
+    ├── collection-1-8115530982417621065.wt
+    ├── diagnostic.data
+    ├── index-1--52200788745683527.wt
+    ├── mongod.lock
+    ├── sizeStorer.wt
+    ├── storage.bson
+    ├── WiredTiger
+    ├── WiredTigerLAS.wt
+    ├── WiredTiger.lock
+    ├── WiredTiger.turtle
+    └── WiredTiger.wt
 ```
 
