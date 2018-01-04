@@ -138,20 +138,11 @@ storage:
 sudo vi /etc/security/limits.d/20-nproc.conf
 ```
 
-Add `nproc` for `mongod` user.
+Add *nproc* and *nofile* limits for *mongod* user.
 
 ```
 mongod     soft    nproc     64000
 mongod     hard    nproc     64000
-```
-
-```
-sudo vi /etc/security/limits.d/20-nofile.conf
-```
-
-Add `nofile ` for `mongod` user.
-
-```
 mongod     soft    nofile     64000
 mongod     hard    nofile     64000
 ```
@@ -207,16 +198,16 @@ sudo service mongod restart
 ### Initiate replica
 
 ```
-/usr/bin/mongo mongodb://ip-172-31-62-119.ec2.internal
+/usr/bin/mongo mongodb://ip-172-31-1-1.ec2.internal
 rs.initiate()
-rs.add("ip-172-31-49-218.ec2.internal")
-rs.add("ip-172-31-57-167.ec2.internal")
+rs.add("ip-172-31-2-2.ec2.internal")
+rs.add("ip-172-31-3-3.ec2.internal")
 ```
 
 Test connection.
 
 ```
-/usr/bin/mongo mongodb://ip-172-31-62-119.ec2.internal,ip-172-31-49-218.ec2.internal,ip-172-31-57-167.ec2.internal/admin
+/usr/bin/mongo mongodb://ip-172-31-1-1.ec2.internal,ip-172-31-2-2.ec2.internal,ip-172-31-3-3.ec2.internal/admin
 ```
 
 ## Enable Authentication
@@ -260,7 +251,7 @@ Restart `mongod` and test connection.
 
 ```
 sudo service mongod restart
-/usr/bin/mongo mongodb://mongoadm:secret@ip-172-31-62-119.ec2.internal,ip-172-31-49-218.ec2.internal,ip-172-31-57-167.ec2.internal/test?authSource=admin
+/usr/bin/mongo mongodb://mongoadm:secret@ip-172-31-1-1.ec2.internal,ip-172-31-2-2.ec2.internal,ip-172-31-3-3.ec2.internal/test?authSource=admin
 ```
 
 ### Manage Users and Roles
@@ -341,12 +332,12 @@ subjectAltName = @alt_names
 
 [alt_names]
 DNS.1 = localhost
-DNS.2 = ip-172-31-62-119.ec2.internal
-DNS.3 = ip-172-31-49-218.ec2.internal
-DNS.4 = ip-172-31-57-167.ec2.internal
-DNS.5 = ec2-54-196-219-238.compute-1.amazonaws.com 
-DNS.6 = ec2-54-166-247-62.compute-1.amazonaws.com 
-DNS.7 = ec2-54-82-165-16.compute-1.amazonaws.com
+DNS.2 = ip-172-31-1-1.ec2.internal
+DNS.3 = ip-172-31-2-2.ec2.internal
+DNS.4 = ip-172-31-3-3.ec2.internal
+DNS.5 = ec2-52-91-1-1.compute-1.amazonaws.com 
+DNS.6 = ec2-54-210-2-2.compute-1.amazonaws.com 
+DNS.7 = ec2-54-157-3-3.compute-1.amazonaws.com 
 EOF
 )
 ```
@@ -401,17 +392,17 @@ net:
 Add AWS DNS names to `/etc/hosts`
 
 ```
-172.31.62.119	ip-172-31-62-119.ec2.internal ec2-52-91-175-60.compute-1.amazonaws.com
-172.31.49.218	ip-172-31-49-218.ec2.internal ec2-54-210-233-14.compute-1.amazonaws.com
-172.31.57.167	ip-172-31-57-167.ec2.internal ec2-54-157-195-125.compute-1.amazonaws.com
+172.31.62.119 ip-172-31-1-1.ec2.internal ec2-52-91-1-1.compute-1.amazonaws.com
+172.31.49.218 ip-172-31-2-2.ec2.internal ec2-54-210-2-2.compute-1.amazonaws.com
+172.31.57.167 ip-172-31-3-3.ec2.internal ec2-54-157-3-3.compute-1.amazonaws.com
 ```
 
 Connect using
 
 ```
-mongo mongodb://mongoadm:secret@ec2-54-210-233-14.compute-1.amazonaws.com/test?authSource=admin --ssl --sslPEMKeyFile ~/ssl/mongodb.pem --sslCAFile ~/ssl/ca.pem
+mongo mongodb://mongoadm:secret@ip-172-31-1-1.ec2.internal/test?authSource=admin --ssl --sslPEMKeyFile ~/ssl/mongodb.pem --sslCAFile ~/ssl/ca.pem
 
-mongo mongodb://mongoadm:secret@ec2-54-166-247-62.compute-1.amazonaws.com,ec2-54-196-219-238.compute-1.amazonaws.com,ec2-54-82-165-16.compute-1.amazonaws.com/admin?authSource=admin\&replicaSet=rs-dev --ssl --sslPEMKeyFile ~/ssl/mongodb.pem --sslCAFile ~/ssl/ca.pem
+mongo mongodb://mongoadm:secret@ip-172-31-1-1.ec2.internal,ip-172-31-2-2.ec2.internal,ip-172-31-3-3.ec2.internal/admin?authSource=admin\&replicaSet=rs-dev --ssl --sslPEMKeyFile ~/ssl/mongodb.pem --sslCAFile ~/ssl/ca.pem
 ```
 
 ## Encryption at Rest
@@ -457,8 +448,8 @@ import com.mongodb.client.MongoIterable;
 public class MongoSSL {
 
 	public void connect() {
-		String hosts = "ec2-54-166-247-62.compute-1.amazonaws.com,ec2-54-196-219-238.compute-1.amazonaws.com,ec2-54-82-165-16.compute-1.amazonaws.com";
-		String url = "mongodb://mongoadm:secret@" + hosts + "/admin?authSource=admin&ssl=true&replicaSet=rs-dev";
+		String [] hosts = {"ip-172-31-1-1.ec2.internal", "ip-172-31-2-2.ec2.internal", "ip-172-31-3-3.ec2.internal"};
+		String url = "mongodb://mongoadm:secret@" + String.join(",", hosts) + "/admin?authSource=admin&ssl=true&replicaSet=rs-dev";
 		System.setProperty("javax.net.ssl.trustStore", "/Users/kenchen/ssl/mongodb.pkcs12");
 		System.setProperty("javax.net.ssl.trustStorePassword", "secret");
 		MongoClient client = new MongoClient(new MongoClientURI(url));
@@ -545,7 +536,6 @@ replication:
 │   │   ├── disable-transparent-hugepages
 ├── security
 │   ├── limits.d
-│   │   ├── 20-nofile.conf
 │   │   └── 20-nproc.conf
 ├── selinux
 │   ├── config
@@ -564,6 +554,9 @@ replication:
     ├── collection-0--52200788745683527.wt
     ├── collection-1-8115530982417621065.wt
     ├── diagnostic.data
+    │   ├── metrics.2017-12-25T10-16-00Z-00000
+    │   ├── metrics.2017-12-25T10-20-26Z-00000
+    │   └── metrics.interim
     ├── index-1--52200788745683527.wt
     ├── mongod.lock
     ├── sizeStorer.wt
