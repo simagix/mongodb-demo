@@ -157,6 +157,27 @@ sudo chkconfig mongod on
 sudo service mongod start
 ```
 
+## Encryption at Rest
+[Encryption at Rest](https://docs.mongodb.com/manual/core/security-encryption-at-rest/) includes the following steps:
+
+[^Encryption at Rest]: https://docs.mongodb.com/manual/core/security-encryption-at-rest/
+
+- Generating a master key.
+- Generating keys for each database.
+- Encrypting data with the database keys.
+- Encrypting the database keys with the master key.
+
+```
+openssl rand -base64 32 > /etc/ssl/enc-keyfile
+chmod 600 /etc/ssl/enc-keyfile
+```
+
+```
+security:
+  enableEncryption: true
+  encryptionKeyFile: /etc/ssl/enc-keyfile
+```
+
 ## Deploy a Replica Set
 - [Deploy a Replica Set](https://docs.mongodb.com/manual/tutorial/deploy-replica-set/)
 - [Deploy New Replica Set With Keyfile Access Control](https://docs.mongodb.com/manual/tutorial/deploy-replica-set-with-keyfile-access-control/#deploy-repl-set-with-auth)
@@ -403,27 +424,6 @@ Connect using
 mongo mongodb://mongoadm:secret@ip-172-31-1-1.ec2.internal/test?authSource=admin --ssl --sslPEMKeyFile ~/ssl/mongodb.pem --sslCAFile ~/ssl/ca.pem
 
 mongo mongodb://mongoadm:secret@ip-172-31-1-1.ec2.internal,ip-172-31-2-2.ec2.internal,ip-172-31-3-3.ec2.internal/admin?authSource=admin\&replicaSet=rs-dev --ssl --sslPEMKeyFile ~/ssl/mongodb.pem --sslCAFile ~/ssl/ca.pem
-```
-
-## Encryption at Rest
-[Encryption at Rest](https://docs.mongodb.com/manual/core/security-encryption-at-rest/) includes the following steps:
-
-[^Encryption at Rest]: https://docs.mongodb.com/manual/core/security-encryption-at-rest/
-
-- Generating a master key.
-- Generating keys for each database.
-- Encrypting data with the database keys.
-- Encrypting the database keys with the master key.
-
-```
-openssl rand -base64 32 > /etc/ssl/enc-keyfile
-chmod 600 /etc/ssl/enc-keyfile
-```
-
-```
-security:
-  enableEncryption: true
-  encryptionKeyFile: /etc/ssl/enc-keyfile
 ```
 
 ## Java Test
