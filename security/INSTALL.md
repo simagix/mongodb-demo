@@ -25,8 +25,6 @@ Modify the value of *SELINUX* to
 SELINUX=disabled
 ```
 
-Reboot the instance.
-
 ## Disable Transparent Huge Pages
 To permanently [disable THP](https://docs.mongodb.com/manual/tutorial/transparent-huge-pages/), create the following file at */etc/init.d/disable-transparent-hugepages*:
 
@@ -147,15 +145,7 @@ mongod     soft    nofile     64000
 mongod     hard    nofile     64000
 ```
 
-### Enable MongoDB Server Startup Service
-```
-sudo chkconfig mongod on
-```
-
-### Start MongoDB Server
-```
-sudo service mongod start
-```
+Reboot the instance to make changes on SELinux, THP, and ulimit to take effect.
 
 ## Encryption at Rest
 [Encryption at Rest](https://docs.mongodb.com/manual/core/security-encryption-at-rest/) includes the following steps:
@@ -168,6 +158,8 @@ sudo service mongod start
 - Encrypting the database keys with the master key.
 
 ```
+sudo mkdir -p /etc/ssl
+sudo chown $USER:$USER /etc/ssl
 openssl rand -base64 32 > /etc/ssl/enc-keyfile
 chmod 600 /etc/ssl/enc-keyfile
 ```
@@ -176,6 +168,19 @@ chmod 600 /etc/ssl/enc-keyfile
 security:
   enableEncryption: true
   encryptionKeyFile: /etc/ssl/enc-keyfile
+```
+
+## Start MongoDB Server
+Enable `mongod` server startup service
+
+```
+sudo chkconfig mongod on
+```
+
+Start `mongod`` server
+
+```
+sudo service mongod start
 ```
 
 ## Deploy a Replica Set
@@ -316,11 +321,6 @@ db.createUser(
 
 
 ### Certificates Creation
-
-```
-sudo mkdir -p /etc/ssl
-sudo chown $USER:$USER /etc/ssl
-```
 
 Create X509 certificate and key files.
 
