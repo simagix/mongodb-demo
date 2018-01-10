@@ -6,13 +6,14 @@ Instructions to install and secure MongoDB 3.6 on CentOS or RHEL 7 on AWS.
 - Turn off Transparent Huge Pages
 - Install a replica set on CentOS 7
 - Increase nproc and nofile of ulimit
+- Data at rest encryption
 - Create first admin user
 - Create application user, access control
 - Enable authentication
 - Transport encryption
-- Data at rest encryption
 - Java example
 - Sample /etc/mongod.conf
+- Files
 
 ## Disable SELinux
 ```
