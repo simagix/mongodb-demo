@@ -74,6 +74,12 @@ case $1 in
 esac
 ```
 
+Make the file exectable.
+
+```
+sudo chmod +x /etc/init.d/disable-transparent-hugepages
+sudo chkconfig --add disable-transparent-hugepages
+```
 Or disable THP one time.
 
 ```
@@ -146,8 +152,6 @@ mongod     soft    nofile     64000
 mongod     hard    nofile     64000
 ```
 
-Reboot the instance to make changes on SELinux, THP, and ulimit to take effect.
-
 ## Encryption at Rest
 [Encryption at Rest](https://docs.mongodb.com/manual/core/security-encryption-at-rest/) includes the following steps:
 
@@ -178,11 +182,7 @@ Enable `mongod` server startup service
 sudo chkconfig mongod on
 ```
 
-Start `mongod`` server
-
-```
-sudo service mongod start
-```
+Reboot the instance to make changes on SELinux, THP, and ulimit to take effect and starts `mongod`.
 
 ## Deploy a Replica Set
 - [Deploy a Replica Set](https://docs.mongodb.com/manual/tutorial/deploy-replica-set/)
