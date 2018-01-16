@@ -454,11 +454,11 @@ public class MongoSSL {
         String url = "mongodb://mongoadm:secret@" + String.join(",", hosts) + "/admin?authSource=admin&ssl=true&replicaSet=rs-dev";
 		
         System.setProperty("javax.net.ssl.keyStore", "/etc/ssl/keystore.jks");
-        System.setProperty("javax.net.ssl.keyStorePassword", "happy123");
+        System.setProperty("javax.net.ssl.keyStorePassword", "secret");
         System.setProperty("javax.net.ssl.keyStoreType", "JKS");
 
         System.setProperty("javax.net.ssl.trustStore", "/etc/ssl/truststore.jks");
-        System.setProperty("javax.net.ssl.trustStorePassword", "happy123");
+        System.setProperty("javax.net.ssl.trustStorePassword", "secret");
         System.setProperty("javax.net.ssl.trustStoreType", "JKS");
         
         MongoClient client = new MongoClient(new MongoClientURI(url));
