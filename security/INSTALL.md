@@ -431,7 +431,7 @@ mongo mongodb://mongoadm:secret@ip-172-31-1-1.ec2.internal,ip-172-31-2-2.ec2.int
 
 ### Import Certs to Keystore
 ```
-pkcs12 -export -out ~/ssl/mongodb.pkcs12 -in ~/ssl/mongodb.pem
+openssl pkcs12 -export -out ~/ssl/mongodb.pkcs12 -in ~/ssl/mongodb.pem
 keytool -importcert -trustcacerts -file ~/ssl/mongodb-cert.crt -keystore ~/ssl/mongodb.pkcs12
 ```
 
