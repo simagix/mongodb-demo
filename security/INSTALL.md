@@ -431,8 +431,10 @@ mongo mongodb://mongoadm:secret@ip-172-31-1-1.ec2.internal,ip-172-31-2-2.ec2.int
 
 ### Import Certs to Keystore
 ```
-openssl pkcs12 -export -out ~/ssl/mongodb.pkcs12 -in ~/ssl/mongodb.pem
-keytool -importcert -trustcacerts -file ~/ssl/mongodb-cert.crt -keystore ~/ssl/mongodb.pkcs12
+cd /etc/ssl
+openssl pkcs12 -export -out keystore.p12 -inkey mongodb.pem -in mongodb.pem
+keytool -importkeystore -destkeystore keystore.jks -srcstoretype PKCS12 -srckeystore keystore.p12
+keytool -importcert -trustcacerts -file mongodb-cert.crt -keystore truststore.jks
 ```
 
 ### Java Example
@@ -447,23 +449,28 @@ import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.MongoIterable;
 
 public class MongoSSL {
-
 	public void connect() {
-		String [] hosts = {"ip-172-31-1-1.ec2.internal", "ip-172-31-2-2.ec2.internal", "ip-172-31-3-3.ec2.internal"};
-		String url = "mongodb://mongoadm:secret@" + String.join(",", hosts) + "/admin?authSource=admin&ssl=true&replicaSet=rs-dev";
-		System.setProperty("javax.net.ssl.trustStore", "/Users/kenchen/ssl/mongodb.pkcs12");
-		System.setProperty("javax.net.ssl.trustStorePassword", "secret");
-		MongoClient client = new MongoClient(new MongoClientURI(url));
-		MongoIterable<String> listDatabaseNames = client.listDatabaseNames();
-		Block<String> printer = System.out::println;
-		listDatabaseNames.forEach(printer);        
-		client.close();
+        String [] hosts = {"ip-172-31-1-1.ec2.internal", "ip-172-31-2-2.ec2.internal", "ip-172-31-3-3.ec2.internal"};
+        String url = "mongodb://mongoadm:secret@" + String.join(",", hosts) + "/admin?authSource=admin&ssl=true&replicaSet=rs-dev";
+		
+        System.setProperty("javax.net.ssl.keyStore", "/etc/ssl/keystore.jks");
+        System.setProperty("javax.net.ssl.keyStorePassword", "happy123");
+        System.setProperty("javax.net.ssl.keyStoreType", "JKS");
+
+        System.setProperty("javax.net.ssl.trustStore", "/etc/ssl/truststore.jks");
+        System.setProperty("javax.net.ssl.trustStorePassword", "happy123");
+        System.setProperty("javax.net.ssl.trustStoreType", "JKS");
+        
+        MongoClient client = new MongoClient(new MongoClientURI(url));
+        MongoIterable<String> listDatabaseNames = client.listDatabaseNames();
+        Block<String> printer = System.out::println;
+        listDatabaseNames.forEach(printer);        
+        client.close();
 	}
 
 	public static void main(String[] args) {
-		MongoSSL mssl = new MongoSSL();
-		mssl.connect();
-
+        MongoSSL mssl = new MongoSSL();
+        mssl.connect();
 	}
 }
 ```
@@ -543,10 +550,12 @@ replication:
 ├── ssl
 │   ├── ca.pem
 │   ├── enc-keyfile
+│   ├── keystore.jks
 │   ├── mongodb-cert.crt
 │   ├── mongodb-cert.key
 │   ├── mongodb.pem
-│   └── rs0-dev.keyfile
+│   ├── rs0-dev.keyfile
+│   └── truststore.jks
 └── yum.repos.d
     └── mongodb-enterprise.repo
 
