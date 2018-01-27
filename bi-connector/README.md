@@ -46,6 +46,32 @@ $ mongosqld -vvvv
 ```
 
 ## 3. Schema
+```
+$ mongo --quiet --eval 'var database="_MCHECK_"' redact_schema.js
+[
+	{
+		"ns" : "_MCHECK_.brands",
+		"schema" : {
+			"name" : "String(7)",
+			"sku" : "String(40)"
+		}
+	},
+	{
+		"ns" : "_MCHECK_.robots",
+		"schema" : {
+			"name" : "String(7)",
+			"nickname" : "String(7)",
+			"descr" : "String(1024)",
+			"stats" : {
+				"tasked" : 0,
+				"battery" : 0,
+				"maint" : false
+			},
+			"updated" : ISODate("2017-09-11T14:00:00Z")
+		}
+	}
+]
+```
 ### 3.1. Collection robots
 #### 3.1.1. MongoDB
 ```
