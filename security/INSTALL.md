@@ -323,37 +323,89 @@ db.createUser(
 
 ### Certificates Creation
 
-Create X509 certificate and key files.
+Create X509 certificate and key files.  Download [create_certs.sh](https://github.com/simagix/mongodb-utils/blob/master/certificates/create_certs.sh) to `/tmp/` and add all hostnames in.
 
 ```
-cd /etc/ssl
-openssl req -newkey rsa:2048 -new -x509 -days 365 -nodes -out mongodb-cert.crt -keyout mongodb-cert.key -config <(
-cat <<-EOF
-[req]
-default_bits = 2048
-prompt = no
-default_md = x509
-x509_extensions = v3_req
-# req_extensions = v3_req
-distinguished_name = dn
+#! /bin/bash
+#
+# author: Ken Chen
+# create certificates with alternative names
+#
+PWD=$(pwd)
+if [ "$1" = "" ]; then
+    TMP=$PWD
+else
+    TMP=$1
+fi
 
-[dn]
+mkdir -p $TMP/certs
+cd $TMP/certs
+echo "Files are created in $TMP/certs"
+
+read -r -d '' DN <<-EOF
 C=US
 ST=Georgia
 L=Atlanta
-O=MongoDB
-OU=CE
-emailAddress=ken.chen@mongodb.com
-CN = www.mongodb.com
+O=Simagix
+OU=DEV
+CN=localhost
+emailAddress=ken.chen@simagix.com
+EOF
 
+read -r -d '' CADATA <<-EOF
+[req]
+default_bits = 2048
+prompt = no
+distinguished_name = dn
+default_md = x509
+x509_extensions = v3_req
+[dn]
+$DN
 [v3_req]
+subjectAltName = @alt_names
 subjectKeyIdentifier = hash
 authorityKeyIdentifier = keyid,issuer
 basicConstraints = CA:TRUE
-subjectAltName = @alt_names
 
 [alt_names]
-DNS.1 = localhost
+DNS.1=localhost
+IP.1=127.0.0.1
+EOF
+
+read -r -d '' PEMDATA <<-EOF
+[req]
+default_bits = 2048
+prompt = no
+distinguished_name = dn
+default_md = x509
+req_extensions = v3_req
+[dn]
+$DN
+[v3_req]
+EOF
+
+# CA certificates
+# echo "Creating server certificate and key file: ca.crt and ca.key"
+openssl req -nodes -x509 -days 365 -newkey rsa:2048 -keyout ca.key -out ca.crt -config <(
+cat <<-EOF
+$CADATA
+EOF
+)
+
+# Server certificates
+openssl req -nodes -newkey rsa:2048 -keyout server.key -out server.csr -config <(
+cat <<-EOF
+$PEMDATA
+EOF
+)
+
+openssl x509 -req -in server.csr -CA ca.crt -CAkey ca.key -CAcreateserial -days 365 -out server.crt -extfile <(
+cat <<-EOF
+basicConstraints = CA:FALSE
+keyUsage = nonRepudiation, digitalSignature, keyEncipherment
+subjectAltName = @alt_names
+[alt_names]
+DNS.1=localhost
 DNS.2 = ip-172-31-1-1.ec2.internal
 DNS.3 = ip-172-31-2-2.ec2.internal
 DNS.4 = ip-172-31-3-3.ec2.internal
@@ -362,17 +414,43 @@ DNS.6 = ec2-54-210-2-2.compute-1.amazonaws.com
 DNS.7 = ec2-54-157-3-3.compute-1.amazonaws.com 
 EOF
 )
+cat server.key server.crt > server.pem
+
+# Client certificates
+# echo "Creating client certificate and key file: client.crt and client.key"
+openssl req -nodes -newkey rsa:2048 -keyout client.key -out client.csr -config <(
+cat <<-EOF
+$PEMDATA
+EOF
+)
+openssl x509 -req -in client.csr -CA ca.crt -CAkey ca.key -CAserial ca.srl -days 365 -out client.crt -extfile <(
+cat <<-EOF
+basicConstraints = CA:FALSE
+keyUsage = nonRepudiation, digitalSignature, keyEncipherment
+EOF
+)
+cat client.key client.crt > client.pem
+
+ls -l $TMP/certs/ca.crt $TMP/certs/server.pem $TMP/certs/client.pem
+cd $PWD
 ```
 
-### Create mongodb.pem and ca.pem
+### Create server.pem and ca.crt
+Create `ca.crt`, `server.pem`, and `client.pem` files and install them under /etc/ssl.
 
 ```
-cd /etc/ssl
-cat mongodb-cert.key mongodb-cert.crt > mongodb.pem
-sudo cp mongodb-cert.crt ca.pem
+cd /tmp/
+/tmp/create_certs.sh
+mv -f /tmp/certs/ca.crt /etc/ssl/
+mv -f /tmp/certs/server.pem /etc/ssl/
+mv -f /tmp/certs/client.pem /etc/ssl/
+```
 
-openssl x509 -in /etc/ssl/mongodb.pem -text -noout
-openssl x509 -in /etc/ssl/ca.pem -text -noout
+To view certificates contents.
+
+```
+openssl x509 -in /etc/ssl/server.pem -text -noout
+openssl x509 -in /etc/ssl/ca.crt -text -noout
 ```
 
 ### Enable encryption
@@ -385,8 +463,8 @@ sudo vi /etc/mongod.conf
 net:
   ssl:
     mode: allowSSL
-    PEMKeyFile: /etc/ssl/mongodb.pem
-    CAFile: /etc/ssl/ca.pem
+    PEMKeyFile: /etc/ssl/server.pem
+    CAFile: /etc/ssl/ca.crt
 ```
 
 ### Upgrade a Cluster to TLS/SSL
@@ -395,9 +473,9 @@ After completing instructions from [Upgrade a Cluster to user TLS/SSL](https://d
 [^Upgrade a Cluster to user TLS/SSL]: https://docs.mongodb.com/manual/tutorial/upgrade-cluster-to-ssl/
 
 ```
-/usr/bin/mongo --ssl -u mongoadm -p secret localhost/admin --sslPEMKeyFile /etc/ssl/mongodb.pem --sslCAFile /etc/ssl/ca.pem
+/usr/bin/mongo --ssl -u mongoadm -p secret localhost/admin --sslPEMKeyFile /etc/ssl/client.pem --sslCAFile /etc/ssl/ca.crt
 /usr/bin/mongo --ssl -u mongoadm -p secret localhost/admin --sslAllowInvalidCertificates
-/usr/bin/mongo --ssl -u appuser -p secret localhost/test --sslPEMKeyFile /etc/ssl/mongodb.pem --sslCAFile /etc/ssl/ca.pem --authenticationDatabase admin
+/usr/bin/mongo --ssl -u appuser -p secret localhost/test --sslPEMKeyFile /etc/ssl/client.pem --sslCAFile /etc/ssl/ca.crt --authenticationDatabase admin
 ```
 
 Finally, update `/etc/mongod.conf` to change ssl mode to `requireSSL`.
@@ -406,8 +484,8 @@ Finally, update `/etc/mongod.conf` to change ssl mode to `requireSSL`.
 net:
   ssl:
     mode: requireSSL
-    PEMKeyFile: /etc/ssl/mongodb.pem
-    CAFile: /etc/ssl/ca.pem
+    PEMKeyFile: /etc/ssl/server.pem
+    CAFile: /etc/ssl/ca.crt
 ```
 
 ### Connect to AWS from Remote
@@ -422,19 +500,21 @@ Add AWS DNS names to `/etc/hosts`
 Connect using
 
 ```
-mongo mongodb://mongoadm:secret@ip-172-31-1-1.ec2.internal/test?authSource=admin --ssl --sslPEMKeyFile ~/ssl/mongodb.pem --sslCAFile ~/ssl/ca.pem
+mongo mongodb://mongoadm:secret@ip-172-31-1-1.ec2.internal/test?authSource=admin --ssl --sslPEMKeyFile ~/ssl/client.pem --sslCAFile ~/ssl/ca.crt
 
-mongo mongodb://mongoadm:secret@ip-172-31-1-1.ec2.internal,ip-172-31-2-2.ec2.internal,ip-172-31-3-3.ec2.internal/admin?authSource=admin\&replicaSet=rs-dev --ssl --sslPEMKeyFile ~/ssl/mongodb.pem --sslCAFile ~/ssl/ca.pem
+mongo mongodb://mongoadm:secret@ip-172-31-1-1.ec2.internal,ip-172-31-2-2.ec2.internal,ip-172-31-3-3.ec2.internal/admin?authSource=admin\&replicaSet=rs-dev --ssl --sslPEMKeyFile ~/ssl/client.pem --sslCAFile ~/ssl/ca.crt
 ```
 
 ## Java Test
 
 ### Import Certs to Keystore
+You need `client.pem` and `ca.crt` files.
+
 ```
 cd /etc/ssl
-openssl pkcs12 -export -out keystore.p12 -inkey mongodb.pem -in mongodb.pem
+openssl pkcs12 -export -out keystore.p12 -inkey client.pem -in client.pem
 keytool -importkeystore -destkeystore keystore.jks -srcstoretype PKCS12 -srckeystore keystore.p12
-keytool -importcert -trustcacerts -file mongodb-cert.crt -keystore truststore.jks
+keytool -importcert -trustcacerts -file ca.crt -keystore truststore.jks
 ```
 
 ### Java Example
@@ -509,8 +589,8 @@ net:
   bindIp: 127.0.0.1,172.31.62.119  # Listen to local interface only, comment to listen on all interfaces.
   ssl:
     mode: requireSSL
-    PEMKeyFile: /etc/ssl/mongodb.pem
-    CAFile: /etc/ssl/ca.pem
+    PEMKeyFile: /etc/ssl/server.pem
+    CAFile: /etc/ssl/ca.crt
 
 security:
   authorization: enabled
@@ -548,13 +628,13 @@ replication:
 ├── selinux
 │   ├── config
 ├── ssl
-│   ├── ca.pem
+│   ├── ca.crt
 │   ├── enc-keyfile
 │   ├── keystore.jks
 │   ├── mongodb-cert.crt
 │   ├── mongodb-cert.key
-│   ├── mongodb.pem
 │   ├── rs0-dev.keyfile
+│   ├── server.pem
 │   └── truststore.jks
 └── yum.repos.d
     └── mongodb-enterprise.repo
