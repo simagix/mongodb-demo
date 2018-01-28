@@ -260,7 +260,19 @@ db.createUser(
 Grant additional roles.
 
 ```
-db.grantRolesToUser('mongoadm', ['clusterAdmin', 'readWriteAnyDatabase'])
+db.grantRolesToUser('mongoadm', ['clusterAdmin', 'readWriteAnyDatabase', 'dbAdminAnyDatabase'])
+```
+
+Or, a shortcut.
+
+```
+db.getSisterDB('admin').createUser(
+  {
+    user: "mongoadm",
+    pwd: "secret",
+    roles: [ 'userAdminAnyDatabase', 'clusterAdmin', 'readWriteAnyDatabase', 'dbAdminAnyDatabase']
+  }
+)
 ```
 
 Enable authorization.
