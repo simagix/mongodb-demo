@@ -1,4 +1,6 @@
-### Active Directory Server
+# MongoDB and Active Directory Server
+[Authenticate and Authorize Users Using Active Directory via Native LDAP](https://docs.mongodb.com/manual/tutorial/authenticate-nativeldap-activedirectory/)
+## Example
 Use *ldap.forumsys.com* to simulate an Active Directory server.  Note that The users are not directly part of the groups (OU) they are members via the uniqueMember attribute. The users themselves reside under “dc=example,dc=com”.
 
 For example the DN of gauss is “uid=gauss,dc=example,dc=com”. You will need to adjust the parameters on your LDAP bind to account for the use of uniqueMember as the way to tie users to groups.
@@ -6,7 +8,8 @@ For example the DN of gauss is “uid=gauss,dc=example,dc=com”. You will need 
 To make this work, we need to create a group fisrt then assign users under the group, for example `mongoadm` group.
 
 ```
-db.createRole( 
+var admin = db.getSiblingDB("admin")
+admin.createRole( 
   { 
     role: "cn=<admin_group>,dc=example,dc=com", 
     privileges: [], 
@@ -14,18 +17,22 @@ db.createRole(
   }
 )
 
-db.createRole( 
+admin.createRole( 
   { 
     role: "cn=mongoadm,dc=example,dc=com", 
     privileges: [], 
     roles: [ "userAdminAnyDatabase" ] 
   }
 )
+
+admin.createRole(    {      role: "ou=People,dc=mongo,dc=local",      privileges: [],      roles: [ "userAdminAnyDatabase" ]    } )
 ```
 
 ```
 ldapsearch -x -D "cn=read-only-admin,dc=example,dc=com" -b "ou=mathematicians,dc=example,dc=com" -w password -H ldap://ldap.forumsys.com
 ldapsearch -x -D "cn=read-only-admin,dc=example,dc=com" -b "ou=mathematicians,dc=example,dc=com" -w password -H ldap://ldap.forumsys.com -s sub "uid=gauss"
+ldapsearch -x -D "cn=read-only-admin,dc=example,dc=com" -b "dc=example,dc=com" -w password -H ldap://ldap.forumsys.com -s sub '(objectclass=*)'
+ldapsearch -x -D "uid=ken,ou=People,dc=mongo,dc=local" -w happy123 -H ldap://ec2-52-207-234-214.compute-1.amazonaws.com -b "dc=mongo,dc=local" -s sub '(objectclass=*)'
 ```
 
 ```
