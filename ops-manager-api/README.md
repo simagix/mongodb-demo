@@ -51,30 +51,32 @@ curl -i -u "$EMAIL:$APIKEY" --digest "$OPSMGRURL/api/public/v1.0/groups/$GROUPID
 curl -u "$EMAIL:$APIKEY" "$OPSMGRURL/api/public/v1.0/groups/$GROUPID/automationConfig" --digest -i
 ```
 
-### Add the restore link to the automation configuration
-```"processes" : [
+### 3.6. Add the restore link to the automation configuration
+Add `backupRestoreUrl` to the result from above.
+
+```
+"processes" : [
   {
     ... ,
-    "hostname" : "example.mongodbdns.com",
-    "backupRestoreUrl" : "https://api-backup.mongodb.com/backup/restore/v2/pull/abc123abc123/def456def456/ghi789ghi789/rs-1440499848-570d78dfe4b0d7519182cc42.tar.gz",
+    "hostname" : "ip-172-31-49-218.ec2.internal",
+    "backupRestoreUrl" : "http://172.31.13.35:8080/backup/restore/v2/pull/d13ef09a6ea006618210620a9c2b7b95/5aac08bf2293162928066d0d/-8825942812630368616/repl2-1521223194-5aac08bf2293162928066d0d.tar",
     ...
   },
   ...
 ]
 ```
 
-### Send the updated automation configuration
+### 3.7. Send the updated automation configuration
 ```
 curl -u "$EMAIL:$APIKEY" -H "Content-Type: application/json" "$OPSMGRURL/api/public/v1.0/groups/$GROUPID/automationConfig" --digest -i -X PUT --data @<configuration>
 ```
 
-### 
-Confirm successful update of the automation configuration
+### 3.8. Confirm successful update of the automation configuration
 ```
 curl -u "$EMAIL:$APIKEY" "$OPSMGRURL/api/public/v1.0/groups/$GROUPID/automationConfig" --digest -i
 ```
 
-### Check the deployment status to ensure goal state is reached.
+### 3.9. Check the deployment status to ensure goal state is reached.
 ```
 curl -u "$EMAIL:$APIKEY" "$OPSMGRURL/api/public/v1.0/groups/$GROUPID/automationStatus" --digest -i
 ```
