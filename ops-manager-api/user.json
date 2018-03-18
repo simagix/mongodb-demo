@@ -1,0 +1,11 @@
+{
+"username": "newuser@example.com",
+"emailAddress": "newuser@example.com",
+"firstName": "New",
+"lastName": "User",
+"password": "Secret123$",
+"roles": [{
+    "groupId": "5a7c78402293160bdbcc7ff3",
+    "roleName": "GROUP_OWNER"
+    }]
+}
