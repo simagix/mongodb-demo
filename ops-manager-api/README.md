@@ -1,4 +1,5 @@
 # Ops Manager API Example
+[Automate Backup Restoration through the API](https://docs.opsmanager.mongodb.com/v3.4/tutorial/automate-backup-restoration-with-api/)
 
 ```
 export EMAIL=ken.chen@mongodb.com
