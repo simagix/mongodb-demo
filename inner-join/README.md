@@ -52,7 +52,7 @@ db.orders.aggregate([
             "description":"$_inventory.description",
             "item":"$item",
             "price":"$price",
-            "fquantity":"$quantity"
+            "quantity":"$quantity"
         }
     }
 ]).pretty()
