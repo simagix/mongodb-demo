@@ -239,3 +239,76 @@ FETCH
 .  |  - keysExamined : 301
 .  |  - index used : a_1_b_1_c_1
 ```
+
+if field a doesn't exist in all document, still works.
+
+```
+mongo compound --quiet --eval 'db.numbers.explain("executionStats").find({$or: [{ a: {$exists: 1}}, {a: {$exists: 0}}], b:  50 , $and: [{c: {$gt:  100}}, {c: {$lt:  200}}]})'
+
+version : 3.6.3
+-- FILTER --
+{
+   "$and": [
+      {
+         "$or": [
+            {
+               "a": {
+                  "$exists": true
+               }
+            },
+            {
+               "$nor": [
+                  {
+                     "a": {
+                        "$exists": true
+                     }
+                  }
+               ]
+            }
+         ]
+      },
+      {
+         "b": {
+            "$eq": 50
+         }
+      },
+      {
+         "c": {
+            "$lt": 200
+         }
+      },
+      {
+         "c": {
+            "$gt": 100
+         }
+      }
+   ]
+}
+
+-- SUMMARY --
+executionTimeMillis : 1
+nReturned : 99
+totalKeysExamined : 301
+totalDocsExamined : 99
+
+-- STAGES --
+OR
+|  - executionTimeMillisEstimate : 0
+|  - nReturned : 99
++--FETCH
+.  |  - executionTimeMillisEstimate : 0
+.  |  - nReturned : 99
+.  |  - docsExamined : 99
+.  +--IXSCAN
+.  .  |  - executionTimeMillisEstimate : 0
+.  .  |  - nReturned : 99
+.  .  |  - keysExamined : 301
+.  .  |  - index used : a_1_b_1_c_1
++--FETCH
+.  |  - executionTimeMillisEstimate : 0
+.  |  - nReturned : 0
+.  +--IXSCAN
+.  .  |  - executionTimeMillisEstimate : 0
+.  .  |  - nReturned : 0
+.  .  |  - index used : a_1_b_1_c_1
+```

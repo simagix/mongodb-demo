@@ -1,0 +1,300 @@
+{
+	"queryPlanner" : {
+		"plannerVersion" : 1,
+		"namespace" : "compound.numbers",
+		"indexFilterSet" : false,
+		"parsedQuery" : {
+			"$and" : [
+				{
+					"$or" : [
+						{
+							"a" : {
+								"$exists" : true
+							}
+						},
+						{
+							"$nor" : [
+								{
+									"a" : {
+										"$exists" : true
+									}
+								}
+							]
+						}
+					]
+				},
+				{
+					"b" : {
+						"$eq" : 50
+					}
+				},
+				{
+					"c" : {
+						"$lt" : 200
+					}
+				},
+				{
+					"c" : {
+						"$gt" : 100
+					}
+				}
+			]
+		},
+		"winningPlan" : {
+			"stage" : "OR",
+			"inputStages" : [
+				{
+					"stage" : "FETCH",
+					"filter" : {
+						"a" : {
+							"$exists" : true
+						}
+					},
+					"inputStage" : {
+						"stage" : "IXSCAN",
+						"keyPattern" : {
+							"a" : 1,
+							"b" : 1,
+							"c" : 1
+						},
+						"indexName" : "a_1_b_1_c_1",
+						"isMultiKey" : false,
+						"multiKeyPaths" : {
+							"a" : [ ],
+							"b" : [ ],
+							"c" : [ ]
+						},
+						"isUnique" : false,
+						"isSparse" : false,
+						"isPartial" : false,
+						"indexVersion" : 2,
+						"direction" : "forward",
+						"indexBounds" : {
+							"a" : [
+								"[MinKey, MaxKey]"
+							],
+							"b" : [
+								"[50.0, 50.0]"
+							],
+							"c" : [
+								"(100.0, 200.0)"
+							]
+						}
+					}
+				},
+				{
+					"stage" : "FETCH",
+					"filter" : {
+						"$nor" : [
+							{
+								"a" : {
+									"$exists" : true
+								}
+							}
+						]
+					},
+					"inputStage" : {
+						"stage" : "IXSCAN",
+						"keyPattern" : {
+							"a" : 1,
+							"b" : 1,
+							"c" : 1
+						},
+						"indexName" : "a_1_b_1_c_1",
+						"isMultiKey" : false,
+						"multiKeyPaths" : {
+							"a" : [ ],
+							"b" : [ ],
+							"c" : [ ]
+						},
+						"isUnique" : false,
+						"isSparse" : false,
+						"isPartial" : false,
+						"indexVersion" : 2,
+						"direction" : "forward",
+						"indexBounds" : {
+							"a" : [
+								"[null, null]"
+							],
+							"b" : [
+								"[50.0, 50.0]"
+							],
+							"c" : [
+								"(100.0, 200.0)"
+							]
+						}
+					}
+				}
+			]
+		},
+		"rejectedPlans" : [ ]
+	},
+	"executionStats" : {
+		"executionSuccess" : true,
+		"nReturned" : 99,
+		"executionTimeMillis" : 1,
+		"totalKeysExamined" : 301,
+		"totalDocsExamined" : 99,
+		"executionStages" : {
+			"stage" : "OR",
+			"nReturned" : 99,
+			"executionTimeMillisEstimate" : 0,
+			"works" : 303,
+			"advanced" : 99,
+			"needTime" : 203,
+			"needYield" : 0,
+			"saveState" : 2,
+			"restoreState" : 2,
+			"isEOF" : 1,
+			"invalidates" : 0,
+			"dupsTested" : 99,
+			"dupsDropped" : 0,
+			"recordIdsForgotten" : 0,
+			"inputStages" : [
+				{
+					"stage" : "FETCH",
+					"filter" : {
+						"a" : {
+							"$exists" : true
+						}
+					},
+					"nReturned" : 99,
+					"executionTimeMillisEstimate" : 0,
+					"works" : 302,
+					"advanced" : 99,
+					"needTime" : 202,
+					"needYield" : 0,
+					"saveState" : 2,
+					"restoreState" : 2,
+					"isEOF" : 1,
+					"invalidates" : 0,
+					"docsExamined" : 99,
+					"alreadyHasObj" : 0,
+					"inputStage" : {
+						"stage" : "IXSCAN",
+						"nReturned" : 99,
+						"executionTimeMillisEstimate" : 0,
+						"works" : 302,
+						"advanced" : 99,
+						"needTime" : 202,
+						"needYield" : 0,
+						"saveState" : 2,
+						"restoreState" : 2,
+						"isEOF" : 1,
+						"invalidates" : 0,
+						"keyPattern" : {
+							"a" : 1,
+							"b" : 1,
+							"c" : 1
+						},
+						"indexName" : "a_1_b_1_c_1",
+						"isMultiKey" : false,
+						"multiKeyPaths" : {
+							"a" : [ ],
+							"b" : [ ],
+							"c" : [ ]
+						},
+						"isUnique" : false,
+						"isSparse" : false,
+						"isPartial" : false,
+						"indexVersion" : 2,
+						"direction" : "forward",
+						"indexBounds" : {
+							"a" : [
+								"[MinKey, MaxKey]"
+							],
+							"b" : [
+								"[50.0, 50.0]"
+							],
+							"c" : [
+								"(100.0, 200.0)"
+							]
+						},
+						"keysExamined" : 301,
+						"seeks" : 203,
+						"dupsTested" : 0,
+						"dupsDropped" : 0,
+						"seenInvalidated" : 0
+					}
+				},
+				{
+					"stage" : "FETCH",
+					"filter" : {
+						"$nor" : [
+							{
+								"a" : {
+									"$exists" : true
+								}
+							}
+						]
+					},
+					"nReturned" : 0,
+					"executionTimeMillisEstimate" : 0,
+					"works" : 1,
+					"advanced" : 0,
+					"needTime" : 0,
+					"needYield" : 0,
+					"saveState" : 2,
+					"restoreState" : 2,
+					"isEOF" : 1,
+					"invalidates" : 0,
+					"docsExamined" : 0,
+					"alreadyHasObj" : 0,
+					"inputStage" : {
+						"stage" : "IXSCAN",
+						"nReturned" : 0,
+						"executionTimeMillisEstimate" : 0,
+						"works" : 1,
+						"advanced" : 0,
+						"needTime" : 0,
+						"needYield" : 0,
+						"saveState" : 2,
+						"restoreState" : 2,
+						"isEOF" : 1,
+						"invalidates" : 0,
+						"keyPattern" : {
+							"a" : 1,
+							"b" : 1,
+							"c" : 1
+						},
+						"indexName" : "a_1_b_1_c_1",
+						"isMultiKey" : false,
+						"multiKeyPaths" : {
+							"a" : [ ],
+							"b" : [ ],
+							"c" : [ ]
+						},
+						"isUnique" : false,
+						"isSparse" : false,
+						"isPartial" : false,
+						"indexVersion" : 2,
+						"direction" : "forward",
+						"indexBounds" : {
+							"a" : [
+								"[null, null]"
+							],
+							"b" : [
+								"[50.0, 50.0]"
+							],
+							"c" : [
+								"(100.0, 200.0)"
+							]
+						},
+						"keysExamined" : 0,
+						"seeks" : 1,
+						"dupsTested" : 0,
+						"dupsDropped" : 0,
+						"seenInvalidated" : 0
+					}
+				}
+			]
+		}
+	},
+	"serverInfo" : {
+		"host" : "Kens-MBP",
+		"port" : 27017,
+		"version" : "3.6.3",
+		"gitVersion" : "9586e557d54ef70f9ca4b43c26892cd55257e1a5"
+	},
+	"ok" : 1
+}

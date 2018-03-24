@@ -1,0 +1,98 @@
+{
+	"queryPlanner" : {
+		"plannerVersion" : 1,
+		"namespace" : "compound.numbers",
+		"indexFilterSet" : false,
+		"parsedQuery" : {
+			"$and" : [
+				{
+					"b" : {
+						"$eq" : 50
+					}
+				},
+				{
+					"c" : {
+						"$lt" : 200
+					}
+				},
+				{
+					"c" : {
+						"$gt" : 100
+					}
+				}
+			]
+		},
+		"winningPlan" : {
+			"stage" : "COLLSCAN",
+			"filter" : {
+				"$and" : [
+					{
+						"b" : {
+							"$eq" : 50
+						}
+					},
+					{
+						"c" : {
+							"$lt" : 200
+						}
+					},
+					{
+						"c" : {
+							"$gt" : 100
+						}
+					}
+				]
+			},
+			"direction" : "forward"
+		},
+		"rejectedPlans" : [ ]
+	},
+	"executionStats" : {
+		"executionSuccess" : true,
+		"nReturned" : 99,
+		"executionTimeMillis" : 36,
+		"totalKeysExamined" : 0,
+		"totalDocsExamined" : 100000,
+		"executionStages" : {
+			"stage" : "COLLSCAN",
+			"filter" : {
+				"$and" : [
+					{
+						"b" : {
+							"$eq" : 50
+						}
+					},
+					{
+						"c" : {
+							"$lt" : 200
+						}
+					},
+					{
+						"c" : {
+							"$gt" : 100
+						}
+					}
+				]
+			},
+			"nReturned" : 99,
+			"executionTimeMillisEstimate" : 24,
+			"works" : 100002,
+			"advanced" : 99,
+			"needTime" : 99902,
+			"needYield" : 0,
+			"saveState" : 781,
+			"restoreState" : 781,
+			"isEOF" : 1,
+			"invalidates" : 0,
+			"direction" : "forward",
+			"docsExamined" : 100000
+		}
+	},
+	"serverInfo" : {
+		"host" : "Kens-MBP",
+		"port" : 27017,
+		"version" : "3.6.3",
+		"gitVersion" : "9586e557d54ef70f9ca4b43c26892cd55257e1a5"
+	},
+	"ok" : 1
+}

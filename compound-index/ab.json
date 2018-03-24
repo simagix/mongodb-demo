@@ -1,0 +1,136 @@
+{
+	"queryPlanner" : {
+		"plannerVersion" : 1,
+		"namespace" : "compound.numbers",
+		"indexFilterSet" : false,
+		"parsedQuery" : {
+			"$and" : [
+				{
+					"a" : {
+						"$eq" : 50
+					}
+				},
+				{
+					"b" : {
+						"$lt" : 20
+					}
+				},
+				{
+					"b" : {
+						"$gt" : 10
+					}
+				}
+			]
+		},
+		"winningPlan" : {
+			"stage" : "FETCH",
+			"inputStage" : {
+				"stage" : "IXSCAN",
+				"keyPattern" : {
+					"a" : 1,
+					"b" : 1,
+					"c" : 1
+				},
+				"indexName" : "a_1_b_1_c_1",
+				"isMultiKey" : false,
+				"multiKeyPaths" : {
+					"a" : [ ],
+					"b" : [ ],
+					"c" : [ ]
+				},
+				"isUnique" : false,
+				"isSparse" : false,
+				"isPartial" : false,
+				"indexVersion" : 2,
+				"direction" : "forward",
+				"indexBounds" : {
+					"a" : [
+						"[50.0, 50.0]"
+					],
+					"b" : [
+						"(10.0, 20.0)"
+					],
+					"c" : [
+						"[MinKey, MaxKey]"
+					]
+				}
+			}
+		},
+		"rejectedPlans" : [ ]
+	},
+	"executionStats" : {
+		"executionSuccess" : true,
+		"nReturned" : 165,
+		"executionTimeMillis" : 0,
+		"totalKeysExamined" : 165,
+		"totalDocsExamined" : 165,
+		"executionStages" : {
+			"stage" : "FETCH",
+			"nReturned" : 165,
+			"executionTimeMillisEstimate" : 0,
+			"works" : 166,
+			"advanced" : 165,
+			"needTime" : 0,
+			"needYield" : 0,
+			"saveState" : 1,
+			"restoreState" : 1,
+			"isEOF" : 1,
+			"invalidates" : 0,
+			"docsExamined" : 165,
+			"alreadyHasObj" : 0,
+			"inputStage" : {
+				"stage" : "IXSCAN",
+				"nReturned" : 165,
+				"executionTimeMillisEstimate" : 0,
+				"works" : 166,
+				"advanced" : 165,
+				"needTime" : 0,
+				"needYield" : 0,
+				"saveState" : 1,
+				"restoreState" : 1,
+				"isEOF" : 1,
+				"invalidates" : 0,
+				"keyPattern" : {
+					"a" : 1,
+					"b" : 1,
+					"c" : 1
+				},
+				"indexName" : "a_1_b_1_c_1",
+				"isMultiKey" : false,
+				"multiKeyPaths" : {
+					"a" : [ ],
+					"b" : [ ],
+					"c" : [ ]
+				},
+				"isUnique" : false,
+				"isSparse" : false,
+				"isPartial" : false,
+				"indexVersion" : 2,
+				"direction" : "forward",
+				"indexBounds" : {
+					"a" : [
+						"[50.0, 50.0]"
+					],
+					"b" : [
+						"(10.0, 20.0)"
+					],
+					"c" : [
+						"[MinKey, MaxKey]"
+					]
+				},
+				"keysExamined" : 165,
+				"seeks" : 1,
+				"dupsTested" : 0,
+				"dupsDropped" : 0,
+				"seenInvalidated" : 0
+			}
+		}
+	},
+	"serverInfo" : {
+		"host" : "Kens-MBP",
+		"port" : 27017,
+		"version" : "3.6.3",
+		"gitVersion" : "9586e557d54ef70f9ca4b43c26892cd55257e1a5"
+	},
+	"ok" : 1
+}

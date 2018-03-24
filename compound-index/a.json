@@ -1,0 +1,122 @@
+{
+	"queryPlanner" : {
+		"plannerVersion" : 1,
+		"namespace" : "compound.numbers",
+		"indexFilterSet" : false,
+		"parsedQuery" : {
+			"a" : {
+				"$eq" : 50
+			}
+		},
+		"winningPlan" : {
+			"stage" : "FETCH",
+			"inputStage" : {
+				"stage" : "IXSCAN",
+				"keyPattern" : {
+					"a" : 1,
+					"b" : 1,
+					"c" : 1
+				},
+				"indexName" : "a_1_b_1_c_1",
+				"isMultiKey" : false,
+				"multiKeyPaths" : {
+					"a" : [ ],
+					"b" : [ ],
+					"c" : [ ]
+				},
+				"isUnique" : false,
+				"isSparse" : false,
+				"isPartial" : false,
+				"indexVersion" : 2,
+				"direction" : "forward",
+				"indexBounds" : {
+					"a" : [
+						"[50.0, 50.0]"
+					],
+					"b" : [
+						"[MinKey, MaxKey]"
+					],
+					"c" : [
+						"[MinKey, MaxKey]"
+					]
+				}
+			}
+		},
+		"rejectedPlans" : [ ]
+	},
+	"executionStats" : {
+		"executionSuccess" : true,
+		"nReturned" : 959,
+		"executionTimeMillis" : 2,
+		"totalKeysExamined" : 959,
+		"totalDocsExamined" : 959,
+		"executionStages" : {
+			"stage" : "FETCH",
+			"nReturned" : 959,
+			"executionTimeMillisEstimate" : 0,
+			"works" : 960,
+			"advanced" : 959,
+			"needTime" : 0,
+			"needYield" : 0,
+			"saveState" : 7,
+			"restoreState" : 7,
+			"isEOF" : 1,
+			"invalidates" : 0,
+			"docsExamined" : 959,
+			"alreadyHasObj" : 0,
+			"inputStage" : {
+				"stage" : "IXSCAN",
+				"nReturned" : 959,
+				"executionTimeMillisEstimate" : 0,
+				"works" : 960,
+				"advanced" : 959,
+				"needTime" : 0,
+				"needYield" : 0,
+				"saveState" : 7,
+				"restoreState" : 7,
+				"isEOF" : 1,
+				"invalidates" : 0,
+				"keyPattern" : {
+					"a" : 1,
+					"b" : 1,
+					"c" : 1
+				},
+				"indexName" : "a_1_b_1_c_1",
+				"isMultiKey" : false,
+				"multiKeyPaths" : {
+					"a" : [ ],
+					"b" : [ ],
+					"c" : [ ]
+				},
+				"isUnique" : false,
+				"isSparse" : false,
+				"isPartial" : false,
+				"indexVersion" : 2,
+				"direction" : "forward",
+				"indexBounds" : {
+					"a" : [
+						"[50.0, 50.0]"
+					],
+					"b" : [
+						"[MinKey, MaxKey]"
+					],
+					"c" : [
+						"[MinKey, MaxKey]"
+					]
+				},
+				"keysExamined" : 959,
+				"seeks" : 1,
+				"dupsTested" : 0,
+				"dupsDropped" : 0,
+				"seenInvalidated" : 0
+			}
+		}
+	},
+	"serverInfo" : {
+		"host" : "Kens-MBP",
+		"port" : 27017,
+		"version" : "3.6.3",
+		"gitVersion" : "9586e557d54ef70f9ca4b43c26892cd55257e1a5"
+	},
+	"ok" : 1
+}
