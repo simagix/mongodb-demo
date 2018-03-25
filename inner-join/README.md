@@ -22,6 +22,26 @@ db.inventory.insert([
 ## In the RDBMS world,
 
 ```
+desc orders;
++----------+----------------+------+-----+---------+-------+
+| Field    | Type           | Null | Key | Default | Extra |
++----------+----------------+------+-----+---------+-------+
+| _id      | double         | YES  | PRI | null    |       |
+| item     | varchar(65535) | YES  |     | null    |       |
+| price    | double         | YES  |     | null    |       |
+| quantity | double         | YES  |     | null    |       |
++----------+----------------+------+-----+---------+-------+
+
+desc inventory;
++-------------+----------------+------+-----+---------+-------+
+| Field       | Type           | Null | Key | Default | Extra |
++-------------+----------------+------+-----+---------+-------+
+| _id         | double         | YES  | PRI | null    |       |
+| description | varchar(65535) | YES  |     | null    |       |
+| instock     | double         | YES  |     | null    |       |
+| sku         | varchar(65535) | YES  |     | null    |       |
++-------------+----------------+------+-----+---------+-------+
+
 SELECT o.*, i.description 
     FROM orders o, inventory i 
     WHERE o.item = i.sku;
