@@ -51,28 +51,34 @@ SELECT o.*, i.description
 
 ```
 db.orders.aggregate([
-    {"$match":{"item":{"$ne":null}}},
-    {"$lookup": 
-        {
-            "as":"_inventory",
-            "foreignField":"sku",
-            "from":"inventory",
-            "localField":"item"
+    {
+        "$match": {
+            "item": {
+                "$ne": null
+            }
         }
     },
-    {"$unwind":
-        {
-            "path":"$_inventory",
-            "preserveNullAndEmptyArrays":false
+    {
+        "$lookup": {
+            "as": "_inventory",
+            "foreignField": "sku",
+            "from": "inventory",
+            "localField": "item"
         }
     },
-    {"$project":
-        {
-            "_id":"$_id",
-            "description":"$_inventory.description",
-            "item":"$item",
-            "price":"$price",
-            "quantity":"$quantity"
+    {
+        "$unwind": {
+            "path": "$_inventory",
+            "preserveNullAndEmptyArrays": false
+        }
+    },
+    {
+        "$project": {
+            "_id": "$_id",
+            "description": "$_inventory.description",
+            "item": "$item",
+            "price": "$price",
+            "quantity": "$quantity"
         }
     }
 ]).pretty()
@@ -90,5 +96,73 @@ db.orders.aggregate([
 	"item" : "pecans",
 	"price" : 20,
 	"fquantity" : 1
+}
+```
+
+## Retrieve Only Needed Fiedls
+Starting MongoDB 3.6, you can retrieve defined fields, instead of entire document, from another collection.  This will be more efficient to "join".
+
+```
+db.orders.aggregate([
+    {
+        "$match": {
+            "item": {
+                "$ne": null
+            }
+        }
+    },
+    {
+        "$lookup": {
+            "as": "_inventory",
+            "from": "inventory",
+            let: {
+                item: "$item"
+            },
+            pipeline: [
+                {
+                    $match: {
+                        $expr: {
+                            $eq: ["$sku", "$$item"]
+                        }
+                    },
+                },
+                {
+                    $project: {
+                        _id: 0,
+                        description: 1
+                    }
+                }
+            ]
+        }
+    },
+    {
+        "$unwind": {
+            "path": "$_inventory",
+            "preserveNullAndEmptyArrays": false
+        }
+    }, {
+        "$project": {
+            "_id": "$_id",
+            "description": "$_inventory.description",
+            "item": "$item",
+            "price": "$price",
+            "quantity": "$quantity"
+        }
+    }
+]).pretty()
+
+{
+	"_id" : 1,
+	"description" : "product 1",
+	"item" : "almonds",
+	"price" : 12,
+	"quantity" : 2
+}
+{
+	"_id" : 2,
+	"description" : "product 4",
+	"item" : "pecans",
+	"price" : 20,
+	"quantity" : 1
 }
 ```
