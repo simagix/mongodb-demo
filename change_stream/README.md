@@ -1,4 +1,5 @@
-### Change Stream
+# Change Stream Examples
+## Mongo Shell
 
 ```
 > cursor = db.apps.watch()
@@ -83,5 +84,33 @@
 		"removedFields" : [ ]
 	}
 }
+```
 
+## Change Stream -> MQTT
+### Python
+
+```
+./change_stream.py
+```
+
+### Node.js
+
+```
+npm install
+node change_stream.js
+```
+
+### Test
+#### MQTT Consumer
+
+```
+pip install paho-mqtt
+./mqtt_listener.py
+```
+
+#### Simulator
+
+```
+mlaunch init --dir ~/ws/cs --replicaset
+mongo --quiet mongodb://localhost:27017/orders?replicaSet=replset < change_stream_sim.js
 ```
