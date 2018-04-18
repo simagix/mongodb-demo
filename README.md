@@ -5,7 +5,8 @@ A number of MongoDB demos.
 - change_stream: MongoDB Change Stream notes
 - compound-index: use a compound index to cover different queries
 - count: demo different stages of _count_ from different query shapes.
-- docker-enterprise: Dockerfile example
+- docker-enterprise: Dockerfile example building MongoDB Enterprise
+- docker-replica: Docker example to initiate a replica set
 - inner-join: MongoDB aggregation framework example to perform "inner join"
 - ops-manager-api: API examples
 - security: Installation of a MongoDB replica with certificates
