@@ -8,7 +8,7 @@ services:
     hostname: repl1
     volumes:
       - $HOME/ws/data/repl1:/data/db/
-    command: /entrypoint.sh replset repl1 27017
+    command: /entrypoint.sh rs1 repl1 27017
     restart: unless-stopped
     networks:
       - mongo_net
@@ -18,7 +18,7 @@ services:
     hostname: repl2
     volumes:
       - $HOME/ws/data/repl2:/data/db/
-    command: /entrypoint.sh replset repl1 27017
+    command: /entrypoint.sh rs1 repl1 27017
     restart: unless-stopped
     networks:
       - mongo_net
@@ -28,7 +28,7 @@ services:
     hostname: repl3
     volumes:
       - $HOME/ws/data/repl3:/data/db/
-    command: /entrypoint.sh replset repl1 27017
+    command: /entrypoint.sh rs1 repl1 27017
     restart: unless-stopped
     networks:
       - mongo_net
@@ -36,7 +36,7 @@ services:
   app1:
     image: simagix/mongo-repl:3.6
     hostname: app1
-    command: /test.sh mongodb://admin:secret@repl1:27017,repl2:27017,repl3:27017/test?authSource=admin&replicaSet=replset
+    command: /test.sh mongodb://admin:secret@repl1:27017,repl2:27017,repl3:27017/test?authSource=admin&replicaSet=rs1
     networks:
       - mongo_net
 
