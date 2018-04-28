@@ -6,40 +6,39 @@ services:
   repl1:
     image: simagix/mongo-repl:3.6
     hostname: repl1
+    ports:
+     - "30001:30001"
     volumes:
       - $HOME/ws/data/repl1:/data/db/
-    command: /entrypoint.sh replset repl1 27017
+    command: /entrypoint.sh replset repl1 30001 30001
     restart: unless-stopped
     networks:
-      - mongo_net
+      - repl_net
 
   repl2:
     image: simagix/mongo-repl:3.6
     hostname: repl2
+    ports:
+     - "30002:30002"
     volumes:
       - $HOME/ws/data/repl2:/data/db/
-    command: /entrypoint.sh replset repl1 27017
+    command: /entrypoint.sh replset repl1 30001 30002
     restart: unless-stopped
     networks:
-      - mongo_net
+      - repl_net
 
   repl3:
     image: simagix/mongo-repl:3.6
     hostname: repl3
+    ports:
+     - "30003:30003"
     volumes:
       - $HOME/ws/data/repl3:/data/db/
-    command: /entrypoint.sh replset repl1 27017
+    command: /entrypoint.sh replset repl1 30001 30003
     restart: unless-stopped
     networks:
-      - mongo_net
-
-  app1:
-    image: simagix/mongo-repl:3.6
-    hostname: app1
-    command: /test.sh mongodb://admin:secret@repl1:27017,repl2:27017,repl3:27017/test?authSource=admin
-    networks:
-      - mongo_net
+      - repl_net
 
 networks:
-  mongo_net:
+  repl_net:
     driver: bridge
