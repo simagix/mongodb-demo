@@ -47,6 +47,67 @@ docker ps | grep docker | awk '{print $1}' | xargs docker kill
 docker images -f "dangling=true" -q  | xargs docker rmi
 ```
 
+## OpenShift
+```
+$ kompose --file ../docker-compose.yml --provider openshift up
+WARN Restart policy 'unless-stopped' in service repl1 is not supported, convert it to 'always'
+WARN Restart policy 'unless-stopped' in service repl2 is not supported, convert it to 'always'
+WARN Restart policy 'unless-stopped' in service repl3 is not supported, convert it to 'always'
+WARN Volume mount on the host "/Users/kenchen/ws/data/repl1" isn't supported - ignoring path on the host
+WARN Volume mount on the host "/Users/kenchen/ws/data/repl2" isn't supported - ignoring path on the host
+WARN Volume mount on the host "/Users/kenchen/ws/data/repl3" isn't supported - ignoring path on the host
+INFO We are going to create OpenShift DeploymentConfigs, Services and PersistentVolumeClaims for your Dockerized application.
+If you need different kind of resources, use the 'kompose convert' and 'oc create -f' commands instead.
+
+INFO Deploying application in "myproject" namespace
+INFO Successfully created DeploymentConfig: app1
+INFO Successfully created ImageStream: app1
+INFO Successfully created DeploymentConfig: repl1
+INFO Successfully created ImageStream: repl1
+INFO Successfully created PersistentVolumeClaim: repl1-claim0 of size 100Mi. If your cluster has dynamic storage provisioning, you don't have to do anything. Otherwise you have to create PersistentVolume to make PVC work
+INFO Successfully created DeploymentConfig: repl2
+INFO Successfully created ImageStream: repl2
+INFO Successfully created PersistentVolumeClaim: repl2-claim0 of size 100Mi. If your cluster has dynamic storage provisioning, you don't have to do anything. Otherwise you have to create PersistentVolume to make PVC work
+INFO Successfully created DeploymentConfig: repl3
+INFO Successfully created ImageStream: repl3
+INFO Successfully created PersistentVolumeClaim: repl3-claim0 of size 100Mi. If your cluster has dynamic storage provisioning, you don't have to do anything. Otherwise you have to create PersistentVolume to make PVC work
+
+Your application has been deployed to OpenShift. You can run 'oc get dc,svc,is,pvc' for details.
+```
+
+### View OC status
+```
+$ oc get dc,svc,is,pvc
+NAME                      REVISION   DESIRED   CURRENT   TRIGGERED BY
+deploymentconfigs/app1    0          1         0         config,image(app1:3.6)
+deploymentconfigs/repl1   0          1         0         config,image(repl1:3.6)
+deploymentconfigs/repl2   0          1         0         config,image(repl2:3.6)
+deploymentconfigs/repl3   0          1         0         config,image(repl3:3.6)
+
+NAME                 DOCKER REPO                       TAGS      UPDATED
+imagestreams/app1    172.30.1.1:5000/myproject/app1    3.6
+imagestreams/repl1   172.30.1.1:5000/myproject/repl1   3.6
+imagestreams/repl2   172.30.1.1:5000/myproject/repl2   3.6
+imagestreams/repl3   172.30.1.1:5000/myproject/repl3   3.6
+
+NAME               STATUS    VOLUME    CAPACITY   ACCESSMODES   STORAGECLASS   AGE
+pvc/repl1-claim0   Pending                                                     20s
+pvc/repl2-claim0   Pending                                                     20s
+pvc/repl3-claim0   Pending                                                     20s
+```
+
+### OpenShift Push Image
+```
+oc whoami -t
+docker login -u developer -p $(oc whoami -t) 172.30.1.1:5000
+for tag in repl1 repl2 repl3 app1
+do
+    docker rmi 172.30.1.1:5000/myproject/$tag
+    docker tag simagix/mongo-repl:3.6 172.30.1.1:5000/myproject/$tag:3.6
+    docker push 172.30.1.1:5000/myproject/$tag:3.6
+done
+```
+
 ## Appendix
 ### Outputs of `docker-compose up`
 ```
