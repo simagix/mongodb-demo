@@ -23,7 +23,11 @@ fi
 
 export PATH=.:/usr/bin:$PATH
 # sed -i.bak -e "s/port: 27017/port: $port/" -e "s/replSetName: replset/replSetName: $replset/" /etc/mongod.conf
-cat /etc/mongod.template | sed -e "s/port: 27017/port: $port/" -e "s/replSetName: replset/replSetName: $replset/" > /etc/mongod.conf
+# cat /etc/mongod.template | sed -e "s/port: 27017/port: $port/" -e "s/replSetName: replset/replSetName: $replset/" > /etc/mongod.conf
+cat /etc/mongod.conf | sed -e "s/port: 27017/port: $port/" -e "s/replSetName: replset/replSetName: $replset/" > /tmp/mongod.conf
+cat /tmp/mongod.conf > /etc/mongod.conf
+cat /etc/ssl/cluster.keyfile > /tmp/cluster.keyfile
+chmod 600 /tmp/cluster.keyfile
 #cat /etc/mongod.conf
 MONGOD="mongod -f /etc/mongod.conf"
 
