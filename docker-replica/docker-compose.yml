@@ -36,7 +36,7 @@ services:
   app1:
     image: simagix/mongo-repl:3.6
     hostname: app1
-    command: /test.sh mongodb://admin:secret@repl1:27017,repl2:27017,repl3:27017/test?authSource=admin
+    command: /test.sh mongodb://admin:secret@repl1:27017,repl2:27017,repl3:27017/test?authSource=admin&replicaSet=replset
     networks:
       - mongo_net
 
