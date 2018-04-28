@@ -22,7 +22,9 @@ if [ "$4" != "" ]; then
 fi
 
 export PATH=.:/usr/bin:$PATH
-sed -i.bak -e "s/port: 27017/port: $port/" -e "s/replSetName: replset/replSetName: $replset/" /etc/mongod.conf
+# sed -i.bak -e "s/port: 27017/port: $port/" -e "s/replSetName: replset/replSetName: $replset/" /etc/mongod.conf
+cat /etc/mongod.template | sed -e "s/port: 27017/port: $port/" -e "s/replSetName: replset/replSetName: $replset/" > /etc/mongod.conf
+#cat /etc/mongod.conf
 MONGOD="mongod -f /etc/mongod.conf"
 
 if [ -z "$(ls -A $dbpath)" ]; then
