@@ -8,38 +8,46 @@ services:
     hostname: repl1
     volumes:
       - $HOME/ws/data/repl1:/data/db/
-    command: /entrypoint.sh rs1 repl1 27017
+    command: /entrypoint.sh rs1 172.16.0.8 27017 172.16.0.8
     restart: unless-stopped
     networks:
-      - mongo_net
+      mongo_net:
+        ipv4_address: 172.16.0.8
 
   repl2:
     image: simagix/mongo-repl:3.6
     hostname: repl2
     volumes:
       - $HOME/ws/data/repl2:/data/db/
-    command: /entrypoint.sh rs1 repl1 27017
+    command: /entrypoint.sh rs1 172.16.0.8 27017 172.16.0.9
     restart: unless-stopped
     networks:
-      - mongo_net
+      mongo_net:
+        ipv4_address: 172.16.0.9
 
   repl3:
     image: simagix/mongo-repl:3.6
     hostname: repl3
     volumes:
       - $HOME/ws/data/repl3:/data/db/
-    command: /entrypoint.sh rs1 repl1 27017
+    command: /entrypoint.sh rs1 172.16.0.8 27017 172.16.0.10
     restart: unless-stopped
     networks:
-      - mongo_net
+      mongo_net:
+        ipv4_address: 172.16.0.10
 
   app1:
     image: simagix/mongo-repl:3.6
     hostname: app1
     command: /test.sh mongodb://admin:secret@repl1:27017,repl2:27017,repl3:27017/test?authSource=admin&replicaSet=rs1
     networks:
-      - mongo_net
+      mongo_net:
+        ipv4_address: 172.16.0.11
 
 networks:
   mongo_net:
     driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.16.0.0/24

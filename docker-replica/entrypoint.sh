@@ -1,7 +1,7 @@
 #! /bin/bash
 
-if [ "$3" == "" ]; then
-    echo "$0 replset primary_host primary_port [port]"
+if [ "$4" == "" ]; then
+    echo "$0 replset primary_ip primary_port ip [port]"
     exit
 fi
 
@@ -11,13 +11,14 @@ primary_port=$3
 
 set -m
 host=$(hostname -f)
+host=$4
 port=27017
 dbpath="/data/db"
 user="admin"
 appuser="appuser"
 secret="secret"
 
-if [ "$4" != "" ]; then
+if [ "$5" != "" ]; then
     port=$4
 fi
 
