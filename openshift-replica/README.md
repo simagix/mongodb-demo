@@ -6,6 +6,7 @@ docker build . -t simagix/mongo-oc-repl:3.6
 
 ## Start a Replica
 ```
+oc login -u developer
 oc new-app openshift-replica.yaml
 ```
 
