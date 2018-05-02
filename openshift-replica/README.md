@@ -40,6 +40,19 @@ oc new-app openshift-replica.yaml
     Run 'oc status' to view your app.
 ```
 
+## Check Status
+```
+$ oc get dc,svc,is,pvc
+NAME                   CLUSTER-IP       EXTERNAL-IP   PORT(S)     AGE
+svc/ocmongo            172.30.155.122   <none>        27017/TCP   12m
+svc/ocmongo-internal   None             <none>        27017/TCP   12m
+
+NAME                       STATUS    VOLUME    CAPACITY   ACCESSMODES   STORAGECLASS   AGE
+pvc/mongo-data-ocmongo-0   Bound     pv0058    100Gi      RWO,ROX,RWX                  16m
+pvc/mongo-data-ocmongo-1   Bound     pv0097    100Gi      RWO,ROX,RWX                  16m
+pvc/mongo-data-ocmongo-2   Bound     pv0039    100Gi      RWO,ROX,RWX                  16m
+```
+
 ## Misc. Command
 ```
 oc delete all --all
