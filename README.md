@@ -8,6 +8,7 @@ A number of MongoDB demos.
 - docker-enterprise: Dockerfile example building MongoDB Enterprise
 - docker-replica: Docker example to initiate a replica set
 - inner-join: MongoDB aggregation framework example to perform "inner join"
+- openshift-replica: Deploy a MongoDB replica on OpenShift
 - ops-manager-api: API examples
 - security: Installation of a MongoDB replica with certificates
 - sort_stages: demo different indexes affecting performance.
