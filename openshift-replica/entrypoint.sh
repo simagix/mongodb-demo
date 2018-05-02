@@ -1,38 +1,26 @@
 #! /bin/bash
 
-if [ "$1" == "" ]; then
-    echo "$1 replset"
-    exit
-fi
-
 set -m
 
-setname=${HOSTNAME%%-*}
-setidx=${HOSTNAME##*-}
-replset=$1
-primary_host=${setname}-0
-primary_port=27017
-
-host=${HOSTNAME}
+replset=${REPLICA_SET_NAME}
 host=$(hostname -f)
 dname=$(echo $host | cut -d'.' -f2-)
-primary_host="${primary_host}.${dname}"
+setname=${HOSTNAME%%-*}
+setidx=${HOSTNAME##*-}
+primary_host="${setname}-0.${dname}"
+primary_port=27017
 port=27017
 dbpath="/data/db"
-user="admin"
-appuser="appuser"
-secret="secret"
-
-echo "$setname $setidx $host $port $primary_host $primary_port"
+user=${ADMIN_USER}
+secret=${ADMIN_PASSWD}
+appuser=${APP_USER}
+appsecret=${APP_PASSWD}
 
 export PATH=.:/usr/bin:$PATH
-# sed -i.bak -e "s/port: 27017/port: $port/" -e "s/replSetName: replset/replSetName: $replset/" /etc/mongod.conf
-# cat /etc/mongod.template | sed -e "s/port: 27017/port: $port/" -e "s/replSetName: replset/replSetName: $replset/" > /etc/mongod.conf
 cat /etc/mongod.conf | sed -e "s/port: 27017/port: $port/" -e "s/replSetName: replset/replSetName: $replset/" > /tmp/mongod.conf
 cat /tmp/mongod.conf > /etc/mongod.conf
 cat /etc/ssl/cluster.keyfile > /tmp/cluster.keyfile
 chmod 600 /tmp/cluster.keyfile
-#cat /etc/mongod.conf
 MONGOD="mongod -f /etc/mongod.conf"
 
 if [ -z "$(ls -A $dbpath)" ]; then
@@ -55,7 +43,7 @@ if [ -z "$(ls -A $dbpath)" ]; then
             ret=$(mongo --port $port --eval "rs.isMaster()" | grep '"ismaster" : true' | wc -l)
         done
         mongo --port $port admin --eval "db.createUser({ user: '$user', pwd: '$secret', roles: ['root'] })"
-        mongo mongodb://$user:$secret@localhost:$port/admin --eval "db.createUser({ user: '$appuser', pwd: '$secret', roles: [{ role: 'readWriteAnyDatabase', db: 'admin' }] })"
+        mongo mongodb://$user:$secret@localhost:$port/admin --eval "db.createUser({ user: '$appuser', pwd: '$appsecret', roles: [{ role: 'readWriteAnyDatabase', db: 'admin' }] })"
     else
         ret=0
         while [[ $ret -eq 0 ]]; do

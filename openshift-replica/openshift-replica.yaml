@@ -73,13 +73,22 @@ objects:
                 - containerPort: 27017
               args:
                 - "/entrypoint.sh"
-                - "rs1"
               volumeMounts:
                 - name: mongo-data
                   mountPath: "/data/db"
               env:
                 - name: MONGODB_SERVICE_NAME
                   value: "${MONGODB_SERVICE_NAME}-internal"
+                - name: REPLICA_SET_NAME
+                  value: "rs1"
+                - name: ADMIN_USER
+                  value: "admin"
+                - name: ADMIN_PASSWD
+                  value: "seret"
+                - name: APP_USER
+                  value: "appuser"
+                - name: APP_PASSWD
+                  value: "seret"
               resources:
                 limits:
                   memory: "256Mi"
