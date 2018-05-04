@@ -1,0 +1,127 @@
+# docker-compose.yml
+
+version: "3"
+
+services:
+  cfg_rs1:
+    image: simagix/mongo-shard:3.6
+    hostname: cfg_rs1
+    volumes:
+      - $HOME/ws/data/cfg/rs1:/data/db/
+    command: /entrypoint.sh cfg cfg_rs1 /etc/mongod-cfg.conf
+    restart: unless-stopped
+    networks:
+      mongo_shard_net:
+        ipv4_address: 172.19.0.31
+
+  cfg_rs2:
+    image: simagix/mongo-shard:3.6
+    hostname: cfg_rs2
+    volumes:
+      - $HOME/ws/data/cfg/rs2:/data/db/
+    command: /entrypoint.sh cfg cfg_rs1 /etc/mongod-cfg.conf
+    restart: unless-stopped
+    networks:
+      mongo_shard_net:
+        ipv4_address: 172.19.0.32
+
+  cfg_rs3:
+    image: simagix/mongo-shard:3.6
+    hostname: cfg_rs3
+    volumes:
+      - $HOME/ws/data/cfg/rs3:/data/db/
+    command: /entrypoint.sh cfg cfg_rs1 /etc/mongod-cfg.conf
+    restart: unless-stopped
+    networks:
+      mongo_shard_net:
+        ipv4_address: 172.19.0.33
+
+  shard1_rs1:
+    image: simagix/mongo-shard:3.6
+    hostname: shard1_rs1
+    volumes:
+      - $HOME/ws/data/shard1/rs1:/data/db/
+    command: /entrypoint.sh shard1 shard1_rs1 /etc/mongod.conf
+    restart: unless-stopped
+    networks:
+      mongo_shard_net:
+        ipv4_address: 172.19.0.11
+
+  shard1_rs2:
+    image: simagix/mongo-shard:3.6
+    hostname: shard1_rs2
+    volumes:
+      - $HOME/ws/data/shard1/rs2:/data/db/
+    command: /entrypoint.sh shard1 shard1_rs1 /etc/mongod.conf
+    restart: unless-stopped
+    networks:
+      mongo_shard_net:
+        ipv4_address: 172.19.0.12
+
+  shard1_rs3:
+    image: simagix/mongo-shard:3.6
+    hostname: shard1_rs3
+    volumes:
+      - $HOME/ws/data/shard1/rs3:/data/db/
+    command: /entrypoint.sh shard1 shard1_rs1 /etc/mongod.conf
+    restart: unless-stopped
+    networks:
+      mongo_shard_net:
+        ipv4_address: 172.19.0.13
+
+  shard2_rs1:
+    image: simagix/mongo-shard:3.6
+    hostname: shard2_rs1
+    volumes:
+      - $HOME/ws/data/shard2/rs1:/data/db/
+    command: /entrypoint.sh shard2 shard2_rs1 /etc/mongod.conf
+    restart: unless-stopped
+    networks:
+      mongo_shard_net:
+        ipv4_address: 172.19.0.21
+
+  shard2_rs2:
+    image: simagix/mongo-shard:3.6
+    hostname: shard2_rs2
+    volumes:
+      - $HOME/ws/data/shard2/rs2:/data/db/
+    command: /entrypoint.sh shard2 shard2_rs1 /etc/mongod.conf
+    restart: unless-stopped
+    networks:
+      mongo_shard_net:
+        ipv4_address: 172.19.0.22
+
+  shard2_rs3:
+    image: simagix/mongo-shard:3.6
+    hostname: shard2_rs3
+    volumes:
+      - $HOME/ws/data/shard2/rs3:/data/db/
+    command: /entrypoint.sh shard2 shard2_rs1 /etc/mongod.conf
+    restart: unless-stopped
+    networks:
+      mongo_shard_net:
+        ipv4_address: 172.19.0.23
+
+  mongos1:
+    image: simagix/mongo-shard:3.6
+    hostname: mongos1
+    command: /mongos.sh
+    networks:
+      mongo_shard_net:
+        ipv4_address: 172.19.0.61
+
+  shard_app1:
+    image: simagix/mongo-shard:3.6
+    hostname: shard_app1
+    command: /test.sh /etc/mongos.conf
+    networks:
+      mongo_shard_net:
+        ipv4_address: 172.19.0.62
+
+networks:
+  mongo_shard_net:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.19.0.0/24
