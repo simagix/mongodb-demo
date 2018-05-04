@@ -8,7 +8,7 @@ services:
     hostname: repl1
     volumes:
       - $HOME/ws/data/repl1:/data/db/
-    command: /entrypoint.sh rs1 172.16.0.8 27017 172.16.0.8
+    command: /entrypoint.sh rs1 repl1
     restart: unless-stopped
     networks:
       mongo_net:
@@ -19,7 +19,7 @@ services:
     hostname: repl2
     volumes:
       - $HOME/ws/data/repl2:/data/db/
-    command: /entrypoint.sh rs1 172.16.0.8 27017 172.16.0.9
+    command: /entrypoint.sh rs1 repl1
     restart: unless-stopped
     networks:
       mongo_net:
@@ -30,7 +30,7 @@ services:
     hostname: repl3
     volumes:
       - $HOME/ws/data/repl3:/data/db/
-    command: /entrypoint.sh rs1 172.16.0.8 27017 172.16.0.10
+    command: /entrypoint.sh rs1 repl1
     restart: unless-stopped
     networks:
       mongo_net:

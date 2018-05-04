@@ -1,26 +1,21 @@
 #! /bin/bash
 
-if [ "$4" == "" ]; then
-    echo "$0 replset primary_ip primary_port ip [port]"
+if [ "$2" == "" ]; then
+    echo "$0 replset primary_host"
     exit
 fi
 
+set -m
+
 replset="$1"
 primary_host="$2"
-primary_port=$3
-
-set -m
+primary_port=27017
 host=$(hostname -f)
-host=$4
 port=27017
 dbpath="/data/db"
 user="admin"
 appuser="appuser"
 secret="secret"
-
-if [ "$5" != "" ]; then
-    port=$4
-fi
 
 export PATH=.:/usr/bin:$PATH
 # sed -i.bak -e "s/port: 27017/port: $port/" -e "s/replSetName: replset/replSetName: $replset/" /etc/mongod.conf
