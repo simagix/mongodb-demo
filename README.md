@@ -6,7 +6,8 @@ A number of MongoDB demos.
 - compound-index: use a compound index to cover different queries
 - count: demo different stages of _count_ from different query shapes.
 - docker-enterprise: Dockerfile example building MongoDB Enterprise
-- docker-replica: Docker example to initiate a replica set
+- docker-replica: Docker example to initiate a replica set using docker-compose
+- docker-shard: Docker example to initiate a sharded cluster using docker-compose
 - inner-join: MongoDB aggregation framework example to perform "inner join"
 - openshift-replica: Deploy a MongoDB replica on OpenShift
 - ops-manager-api: API examples
