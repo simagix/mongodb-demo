@@ -1,10 +1,12 @@
 # MongoDB Integration with OpenShift
 ## Minishift
 ```
+# minishift delete --clear-cache
+minishift delete
 minishift start
 minishift docker-env
 eval $(minishift docker-env)
-docker login -u developer -p $(oc whoami -t) $(minishift openshift registry
+docker login -u developer -p $(oc whoami -t) $(minishift openshift registry)
 ```
 
 ## Build Image
