@@ -1,4 +1,12 @@
 # MongoDB Integration with OpenShift
+## Minishift
+```
+minishift start
+minishift docker-env
+eval $(minishift docker-env)
+docker login -u developer -p $(oc whoami -t) $(minishift openshift registry
+```
+
 ## Build Image
 ```
 docker build . -t simagix/mongo-oc-repl:3.6
