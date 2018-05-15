@@ -32,6 +32,8 @@ security:
   clusterAuthMode: x509
 EOF
 
+HOSTNAME=$(hostname -f)
+
 for i in 1 2 3
 do
     dbpath="rs${i}"
@@ -44,13 +46,13 @@ if [ $init -eq 1 ]; then
     sleep 5
     echo "rs.initiate()"
     mongo mongodb://localhost:27021/admin --sslCAFile /etc/ssl/certs/ca.pem --ssl --sslPEMKeyFile /etc/ssl/certs/client.pem \
-        --eval 'rs.initiate( { _id: "rs", members: [ { _id: 0, host: "localhost:27021" }, { _id: 1, host: "localhost:27022" }, { _id: 2, host: "localhost:27023" }] } )'
+        --eval "rs.initiate( { _id: 'rs', members: [ { _id: 0, host: '$HOSTNAME:27021' }, { _id: 1, host: '$HOSTNAME:27022' }, { _id: 2, host: '$HOSTNAME:27023' }] } )"
 
     echo "create admin user"
     ret=0
     while [[ $ret -eq 0 ]]; do
         sleep 5
-	    ret=$(mongo mongodb://localhost:27021/admin?replicaSet=rs \
+	    ret=$(mongo mongodb://localhost:27021/admin \
 	        --sslCAFile /etc/ssl/certs/ca.pem --ssl --sslPEMKeyFile /etc/ssl/certs/client.pem \
 	        --eval 'db.getSisterDB("$external").runCommand( {
 	            createUser:"emailAddress=ken.chen@simagix.com,CN=ken.chen,OU=Consulting,O=Simagix,L=Atlanta,ST=Georgia,C=US" ,
