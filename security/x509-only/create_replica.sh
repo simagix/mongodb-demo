@@ -4,6 +4,34 @@ init=0
 if [ -z "$(ls -A data/rs1/db)" ]; then
     init=1
 fi
+
+cat > mongod.conf << EOF
+systemLog:
+  destination: file
+  logAppend: true
+  path: _path_/mongod.log
+storage:
+  dbPath: _path_/db
+  journal:
+    enabled: true
+processManagement:
+  fork: true
+  pidFilePath: /tmp/mongod-27017.pid
+net:
+  port: 27017
+  bindIp: 0.0.0.0
+  ssl:
+    mode: requireSSL
+    PEMKeyFile: /etc/ssl/certs/server.pem
+    clusterFile: /etc/ssl/certs/server.pem
+    CAFile: /etc/ssl/certs/ca.pem
+replication:
+  replSetName: rs
+security:
+  authorization: enabled
+  clusterAuthMode: x509
+EOF
+
 for i in 1 2 3
 do
     dbpath="rs${i}"
@@ -14,19 +42,24 @@ done
 
 if [ $init -eq 1 ]; then
     sleep 5
-    mongo --port 27021 --sslCAFile /etc/ssl/certs/ca.crt --ssl --sslPEMKeyFile /etc/ssl/certs/client.pem \
+    echo "rs.initiate()"
+    mongo mongodb://localhost:27021/admin --sslCAFile /etc/ssl/certs/ca.pem --ssl --sslPEMKeyFile /etc/ssl/certs/client.pem \
         --eval 'rs.initiate( { _id: "rs", members: [ { _id: 0, host: "localhost:27021" }, { _id: 1, host: "localhost:27022" }, { _id: 2, host: "localhost:27023" }] } )'
 
-    sleep 5
-    mongo mongodb://localhost:27021/admin?replicaSet=rs \
-        --sslCAFile /etc/ssl/certs/ca.crt --ssl --sslPEMKeyFile /etc/ssl/certs/client.pem \
-        --eval 'db.getSisterDB("$external").runCommand( {
-            createUser:"emailAddress=ken.chen@simagix.com,CN=ken.chen,OU=Consulting,O=Simagix,L=Atlanta,ST=Georgia,C=US" ,
-            roles: [{role: "root", db: "admin" }] })'
+    echo "create admin user"
+    ret=0
+    while [[ $ret -eq 0 ]]; do
+        sleep 5
+	    ret=$(mongo mongodb://localhost:27021/admin?replicaSet=rs \
+	        --sslCAFile /etc/ssl/certs/ca.pem --ssl --sslPEMKeyFile /etc/ssl/certs/client.pem \
+	        --eval 'db.getSisterDB("$external").runCommand( {
+	            createUser:"emailAddress=ken.chen@simagix.com,CN=ken.chen,OU=Consulting,O=Simagix,L=Atlanta,ST=Georgia,C=US" ,
+	            roles: [{role: "root", db: "admin" }] })' | grep '"ok" : 1' | wc -l)
+    done
 fi
 
 mongo mongodb://localhost:27021/admin?replicaSet=rs \
-    --sslCAFile /tmp/certs/ca.crt --ssl --sslPEMKeyFile /tmp/certs/client.pem \
+    --sslCAFile /etc/ssl/certs/ca.pem --ssl --sslPEMKeyFile /etc/ssl/certs/client.pem \
     --authenticationMechanism MONGODB-X509 --authenticationDatabase "\$external" \
     -u "emailAddress=ken.chen@simagix.com,CN=ken.chen,OU=Consulting,O=Simagix,L=Atlanta,ST=Georgia,C=US" \
     --eval 'rs.status()'
