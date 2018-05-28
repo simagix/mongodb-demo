@@ -16,3 +16,31 @@ Script `create_replica.sh` does
 - Initiate a replica set
 - Create a use defined in a certificate.
 
+Example *mongod.conf* file
+
+```
+systemLog:
+  destination: file
+  logAppend: true
+  path: /var/log/mongodb/mongod.log
+storage:
+  dbPath: /data/rs1/db
+  journal:
+    enabled: true
+processManagement:
+  fork: true
+  pidFilePath: /var/run/mongodb/mongod-27020.pid
+net:
+  port: 27020
+  bindIp: 0.0.0.0
+  ssl:
+    mode: requireSSL
+    PEMKeyFile: /etc/ssl/certs/server.pem
+    clusterFile: /etc/ssl/certs/server.pem
+    CAFile: /etc/ssl/certs/ca.pem
+replication:
+  replSetName: rs
+security:
+  authorization: enabled
+  clusterAuthMode: x509
+```
