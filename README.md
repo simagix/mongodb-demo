@@ -22,6 +22,7 @@ A number of MongoDB demos.
 - [ops-manager-api](ops-manager-api): API examples
 
 ### Performance
+- [aggregation](aggregation): `$elemMatch`, `$unwind`, `$redact`, and `$filter`
 - [compound-index](compound-index): use a compound index to cover different queries
 - [count](count): demo different stages of _count_ from different query shapes
 - [sort_stages](sort_stages): demo different indexes affecting performance
@@ -29,7 +30,7 @@ A number of MongoDB demos.
 ### Security
 - [active_directory](active_directory): use Active Directory to authenticate users in MongoDB
 - [security](security): Installation of a MongoDB replica with certificates
-  - KMIP 
+  - KMIP
   - X.509
 
 ### Sharding
