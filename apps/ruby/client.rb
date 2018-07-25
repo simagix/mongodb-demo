@@ -2,7 +2,7 @@
 
 require 'mongo'
 
-# client.rb 'mongodb://root:happy123@127.0.0.1:27017/keyhole?authSource=admin&replcaSet=rs-dev'
+# client.rb 'mongodb://user:password@localhost:27017/test?authSource=admin'
 # client = Mongo::Client.new('#{ARGV[0]}')
 
 client_options = {
