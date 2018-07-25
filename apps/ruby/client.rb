@@ -6,7 +6,7 @@ require 'mongo'
 # client = Mongo::Client.new('#{ARGV[0]}')
 
 client_options = {
-  database: 'test',
+  database: 'keyhole',
   auth_source: 'admin',
   user: 'user',
   password: 'password',
