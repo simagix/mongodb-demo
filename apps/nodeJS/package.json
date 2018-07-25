@@ -1,0 +1,10 @@
+{
+  "name": "mongo-demo-NodeJS",
+  "version": "1.0.0",
+  "description": "Demo node.js client connection",
+  "author": "Ken Chen",
+  "license": "ISC",
+  "dependencies": {
+    "mongodb": "^3.0.1"
+  }
+}
