@@ -7,6 +7,7 @@ A number of MongoDB demos.
 - [inner-join](inner-join): MongoDB aggregation framework example to perform "inner join"
 
 ### Application Examples
+- [apps](apps): A number of client examples with TLS transport encryption
 - [xml_to_mongo](xml_to_mongo): Java example of converting XML to POJO and persist to MongoDB
 
 ### Change Stream
