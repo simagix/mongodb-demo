@@ -16,7 +16,9 @@ client_options = {
   ssl_key: '/etc/ssl/certs/client.pem'
 }
 
+Mongo::Logger.logger.level = Logger::INFO
 client = Mongo::Client.new(['localhost:27017'], client_options)
 collection = client[:cars]
 
-puts collection.find( { color: 'Red' } ).first
+cnt = collection.find( { color: 'Red' } ).count
+puts "number of red cars: #{cnt}"
