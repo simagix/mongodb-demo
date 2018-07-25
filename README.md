@@ -30,8 +30,8 @@ A number of MongoDB demos.
 ### Security
 - [active_directory](active_directory): use Active Directory to authenticate users in MongoDB
 - [security](security): Installation of a MongoDB replica with certificates
-  - KMIP
-  - X.509
+  - [KMIP](https://github.com/simagix/mongodb-demo/tree/master/security/KMIP)
+  - [X.509](https://github.com/simagix/mongodb-demo/tree/master/security/x509-only)
 
 ### Sharding
 - [tiered_cluster](tiered_cluster): demo tiered cluster and zones

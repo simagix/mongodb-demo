@@ -226,7 +226,8 @@ sudo service mongod restart
 
 ```
 /usr/bin/mongo mongodb://ip-172-31-1-1.ec2.internal
-rs.initiate()
+cfg = {_id: "rs-dev", members:[ {_id: 0, host: "ip-172-31-1-1.ec2.internal"} ]}
+rs.initiate(cfg)
 rs.add("ip-172-31-2-2.ec2.internal")
 rs.add("ip-172-31-3-3.ec2.internal")
 ```
