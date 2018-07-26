@@ -22,7 +22,8 @@ mongo 'mongodb://user:password@localhost:27017/keyhole?authSource=admin' --ssl -
 
 ### Seed Data
 ```
-keyhole --uri mongodb://user:password@localhost/keyhole?authSource=admin --seed --drop --ssl --sslCAFile /etc/ssl/certs/ca.pem --sslPEMKeyFile /etc/ssl/certs/client.pem
+keyhole --uri mongodb://user:password@localhost/keyhole?authSource=admin --seed --drop \
+  --ssl --sslCAFile /etc/ssl/certs/ca.pem --sslPEMKeyFile /etc/ssl/certs/client.pem
 ```
 
 ## Test Ruby Script
