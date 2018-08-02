@@ -26,7 +26,7 @@ MongoClient.connect(url, options, function(err, client) {
   const db = client.db('keyhole');
   db.collection('cars').find({'color': 'Red'}).toArray(function(err, docs) {
     console.log('number of red cars: ' + docs.length);
+    client.close();
   });
 
-  client.close();
 });

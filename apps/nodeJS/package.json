@@ -5,6 +5,6 @@
   "author": "Ken Chen",
   "license": "ISC",
   "dependencies": {
-    "mongodb": "^3.0.1"
+    "mongodb": "^3.x"
   }
 }
