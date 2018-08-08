@@ -1,4 +1,5 @@
 import static com.mongodb.client.model.Filters.eq;
+import static com.mongodb.client.model.Updates.set;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -26,6 +27,12 @@ public class Client {
         MongoCollection<Document> collection = client.getDatabase("keyhole").getCollection("cars");
 
         long count = collection.count(eq("color", "Red"));
+        System.out.println("number of red cars: " + count);
+        collection.findOneAndUpdate(eq("color", "Red"), set("color", "None"));
+        count = collection.count(eq("color", "Red"));
+        System.out.println("number of red cars: " + count);
+        collection.findOneAndUpdate(eq("color", "None"), set("color", "Red"));
+        count = collection.count(eq("color", "Red"));
         System.out.println("number of red cars: " + count);
         client.close();
 	}
