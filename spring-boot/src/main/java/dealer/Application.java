@@ -71,5 +71,16 @@ public class Application implements CommandLineRunner {
 		// use VehicleRepository
 		list = repository.findNewRedVehicle(PageRequest.of(0, 1, Sort.Direction.ASC, "style"));
 		list.stream().forEach(o -> logger.info(o.style));
+
+		// Add a monster truck
+		Vehicle v = new Vehicle("Black", "Monster Truck", false);
+		repository.save(v);
+		list = templ.find(new Query(Criteria.where("style").is("Monster Truck")), Vehicle.class);
+		list.stream().forEach(o -> logger.info(o.color));
+
+		// remove all monster trucks
+		templ.remove(new Query(Criteria.where("style").is("Monster Truck")), Vehicle.class);
+		list = templ.find(new Query(Criteria.where("style").is("Monster Truck")), Vehicle.class);
+		logger.info("Total # of monster trucks: " + list.size());
 	}
 }
