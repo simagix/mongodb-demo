@@ -1,0 +1,9 @@
+spring:
+  data:
+    mongodb:
+      uri: mongodb://localhost/keyhole
+logging:
+  level:
+    root: ERROR
+    dealer: DEBUG
+    org.springframework.data.mongodb: DEBUG
