@@ -1,0 +1,14 @@
+{
+  "name": "mongoose-orm",
+  "version": "1.0.0",
+  "description": "Mongoose demo",
+  "main": "index.js",
+  "scripts": {
+    "test": "node index.js"
+  },
+  "author": "Ken Chen",
+  "license": "ISC",
+  "dependencies": {
+    "mongoose": "^5.3.13"
+  }
+}
