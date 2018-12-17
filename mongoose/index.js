@@ -4,6 +4,8 @@ var Schema = mongoose.Schema;
 var vehicleSchema = new Schema({
   color: String,
   style: String,
+  used: Boolean,
+  year: Number,
 }, { collection: 'cars' });
 
 var Vehicle = mongoose.model('Vehicle', vehicleSchema)
