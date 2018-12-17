@@ -15,7 +15,7 @@ public interface VehicleRepository extends MongoRepository<Vehicle, String> {
     @Query("{ color : 'Red', style: 'Truck' }")
     public List<Vehicle> findRedTrucks(Pageable pageable);
     
-    @Query("{ color : 'Red', isNew: true }")
+    @Query("{ color : 'Red', used: false }")
     public List<Vehicle> findNewRedVehicle(Pageable pageable);
 
 }

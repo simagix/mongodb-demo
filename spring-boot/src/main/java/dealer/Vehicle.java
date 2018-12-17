@@ -11,20 +11,20 @@ public class Vehicle {
 
     public String color;
     public String style;
-    public boolean isNew;
+    public boolean used;
 
     public Vehicle() {}
 
-    public Vehicle(String color, String style, boolean isNew) {
+    public Vehicle(String color, String style, boolean used) {
         this.color = color;
         this.style = style;
-        this.isNew = isNew;
+        this.used = used;
     }
 
     @Override
     public String toString() {
         return String.format(
-                "Vehicle[id=%s, color='%s', style='%s', isNew='%b']",
-                id, color, style, isNew);
+                "Vehicle[id=%s, color='%s', style='%s', used='%b']",
+                id, color, style, used);
     }
 }
