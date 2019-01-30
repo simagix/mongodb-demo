@@ -65,14 +65,14 @@ if [ $init -eq 1 ]; then
     mongo mongodb://localhost:27021/admin \
         --sslCAFile $CERTS_ROOT/certs/ca.pem --ssl --sslPEMKeyFile $CERTS_ROOT/certs/client.pem \
         --eval 'db.getSisterDB("$external").runCommand( {
-            createUser:"emailAddress=ken.chen@simagix.com,CN=ken.chen,OU=Root,O=Simagix,L=Atlanta,ST=Georgia,C=US" ,
+            createUser:"emailAddress=ken.chen@simagix.com,CN=ken.chen,OU=Consulting,O=Simagix,L=Atlanta,ST=Georgia,C=US" ,
             roles: [{role: "root", db: "admin" }] })'
 fi
 
 mongo mongodb://localhost:27021/admin?replicaSet=rs \
     --sslCAFile $CERTS_ROOT/certs/ca.pem --ssl --sslPEMKeyFile $CERTS_ROOT/certs/client.pem \
     --authenticationMechanism MONGODB-X509 --authenticationDatabase "\$external" \
-    -u "emailAddress=ken.chen@simagix.com,CN=ken.chen,OU=Root,O=Simagix,L=Atlanta,ST=Georgia,C=US" \
+    -u "emailAddress=ken.chen@simagix.com,CN=ken.chen,OU=Consulting,O=Simagix,L=Atlanta,ST=Georgia,C=US" \
     --eval 'rs.status()'
 
 rm -f mongod.conf
