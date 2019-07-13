@@ -9,8 +9,10 @@ services:
 #      - 8088:88
 #      - 8749:749
     environment:
-      REALM: SIMAGIX.COM
-      DOMAIN_REALM: kerberos.simagix.com
+      REALM: "SIMAGIX.COM"
+      DOMAIN_REALM: "kerberos.simagix.com"
+      ADMIN_USER: "admin"
+      ADMIN_PASSWORD: "9b3819a41a035529b247e1afdf699dbb"
 
     volumes:
       - /tmp/kerberos:/var/log/kerberos
@@ -19,8 +21,14 @@ services:
   mongo.simagix.com:
     image: simagix/mongo-kerberos
     hostname: mongo.simagix.com
+    depends_on:
+      - kerberos.simagix.com
     ports:
       - 27017:27017
+    environment:
+      REALM: SIMAGIX.COM
+      ADMIN_USER: "admin"
+      ADMIN_PASSWORD: "9b3819a41a035529b247e1afdf699dbb"
     restart: unless-stopped
 networks:
   kerberos_net:

@@ -11,3 +11,8 @@ docker build -t simagix/mongo-kerberos -f Dockerfile-mdb .
 ```
 docker-compose up
 ```
+
+## Shutdown
+```
+docker-compose down
+```
