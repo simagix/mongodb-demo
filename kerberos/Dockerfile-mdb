@@ -1,0 +1,14 @@
+FROM centos:7
+MAINTAINER Ken Chen <simagix@gmail.com>
+
+RUN yum install -y krb5-libs krb5-auth-dialog krb5-workstation
+ADD krb5.conf /etc/krb5.conf
+ADD mongodb-enterprise.repo /etc/yum.repos.d/
+RUN yum -y install mongodb-enterprise && \
+    yum clean all && \
+    mkdir -p /data/db && \
+    chown -R mongod:mongod /data/db
+
+EXPOSE 27017
+ADD ./entrypoint-mdb.sh /entrypoint.sh
+ENTRYPOINT ["/entrypoint.sh"]

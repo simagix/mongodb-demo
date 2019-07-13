@@ -1,0 +1,27 @@
+# Copyright 2019 Kuei-chun Chen. All rights reserved.
+version: "3"
+
+services:
+  kerberos.simagix.com:
+    image: simagix/kerberos
+    hostname: kerberos.simagix.com
+#    ports:
+#      - 8088:88
+#      - 8749:749
+    environment:
+      REALM: SIMAGIX.COM
+      DOMAIN_REALM: kerberos.simagix.com
+
+    volumes:
+      - /tmp/kerberos:/var/log/kerberos
+    restart: unless-stopped
+
+  mongo.simagix.com:
+    image: simagix/mongo-kerberos
+    hostname: mongo.simagix.com
+    ports:
+      - 27017:27017
+    restart: unless-stopped
+networks:
+  kerberos_net:
+    driver: bridge
