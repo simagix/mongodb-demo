@@ -1,0 +1,17 @@
+dn: dc=simagix,dc=local
+dc: simagix
+objectClass: top
+objectClass: domain
+
+dn: cn=ldapadm,dc=simagix,dc=local
+objectClass: organizationalRole
+cn: ldapadm
+description: LDAP Manager
+
+dn: ou=Users,dc=simagix,dc=local
+objectClass: organizationalUnit
+ou: Users
+
+dn: ou=Groups,dc=simagix,dc=local
+objectClass: organizationalUnit
+ou: Groups

@@ -1,0 +1,12 @@
+FROM centos:7
+MAINTAINER Ken Chen <simagix@gmail.com>
+RUN yum -y install openldap compat-openldap openldap-clients openldap-servers openldap-servers-sql openldap-devel
+
+ADD openldap/base.ldif /base.ldif
+ADD openldap/db.ldif /db.ldif
+ADD openldap/mdb.ldif /mdb.ldif
+ADD openldap/monitor.ldif /monitor.ldif
+
+EXPOSE 389 636
+ADD entrypoint-ldap.sh /entrypoint.sh
+ENTRYPOINT ["/entrypoint.sh"]

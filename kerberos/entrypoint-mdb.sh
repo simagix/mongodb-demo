@@ -8,36 +8,46 @@
 mkdir -p /var/log/mongodb /var/log/kerberos
 # Create an user
 mongod --dbpath /data/db --logpath /var/log/mongodb/mongod.log --bind_ip_all --fork
-mongo mongodb://localhost/ --eval "db.getSisterDB('\$external').createUser({ user: 'mdb/analytic@${REALM}', roles: [ { role: 'readWrite', db: 'admin' } ]})"
+mongo mongodb://localhost/ --eval "db.getSisterDB('\$external').createUser({ \
+  user: 'mdb@${REALM}', \
+  roles: [ { role: 'readWrite', db: 'admin' } ]})"
+
+mongo mongodb://localhost/ --eval "db.getSisterDB('admin').createRole({ \
+  role: 'cn=DBAdmin,ou=Groups,dc=simagix,dc=local', \
+  privileges: [], \
+  roles: [ 'userAdminAnyDatabase', 'clusterAdmin', 'readWriteAnyDatabase', 'dbAdminAnyDatabase' ] })"
 mongo 'mongodb://localhost/admin' --eval 'db.shutdownServer()'
 
 # Create princials
-pass=$(openssl rand -hex 8)
+pass=$ADMIN_PASSWORD
+#pass=$(openssl rand -hex 8)
 mkdir -p $SHARED
 keytab="$SHARED/mongodb.keytab"
-clientkt="$SHARED/mdb.keytab"
 # principal for mongod
 kadmin -r $REALM -p $ADMIN_USER/admin -w $ADMIN_PASSWORD addprinc -pw $pass mongodb/mongo.simagix.com
 printf "%b" "addent -password -p mongodb/mongo.simagix.com -k 1 -e aes256-cts\n$pass\nwrite_kt $keytab" | ktutil
-# principal for user
-kadmin -r $REALM -p $ADMIN_USER/admin -w $ADMIN_PASSWORD addprinc -pw $pass mdb/analytic
-# use ktutil to create a keyfile for mongod to use
-printf "%b" "addent -password -p mdb/analytic -k 1 -e aes256-cts\n$pass\nwrite_kt $clientkt" | ktutil
 
 # Start mongod with auth and GSSAPI
-env KRB5_KTNAME=$keytab \
-  mongod --dbpath /data/db --logpath /var/log/mongodb/mongod.log --bind_ip_all --fork \
-  --auth --setParameter authenticationMechanisms=GSSAPI
+env KRB5_KTNAME=$keytab mongod -f /etc/mongod.conf
 
+# principal for user
+clientkt="$SHARED/mdb.keytab"
+kadmin -r $REALM -p $ADMIN_USER/admin -w $ADMIN_PASSWORD addprinc -pw $pass mdb
+# use ktutil to create a keyfile for mongod to use
+printf "%b" "addent -password -p mdb -k 1 -e aes256-cts\n$pass\nwrite_kt $clientkt" | ktutil
+kinit mdb@$REALM -kt $clientkt
 # test with a client
-kinit mdb/analytic@$REALM -kt $clientkt
 mongo --host mongo.simagix.com --authenticationMechanism=GSSAPI \
-  --authenticationDatabase='$external' --username "mdb/analytic@$REALM" \
+  --authenticationDatabase='$external' --username "mdb@$REALM" \
   --eval 'db.version()'
 
 # test using a connection string, %2f: / and %40: @
-mongo "mongodb://mdb%2fanalytic%40$REALM:xxx@mongo.simagix.com/?authMechanism=GSSAPI&authSource=\$external" \
-  --eval 'db.version()'
+mongo "mongodb://mdb%40$REALM:xxx@mongo.simagix.com/?authMechanism=GSSAPI&authSource=\$external" \
+  --eval 'db.getSisterDB("admin").getRoles()'
+
+# test using a connection string, password was hardcoded
+mongo "mongodb://mdb:secret@mongo.simagix.com/?authMechanism=PLAIN&authSource=\$external" \
+  --eval 'db.getSisterDB("admin").getRoles()'
 
 # keep the instance up
 tail -F /var/log/mongodb/mongod.log
