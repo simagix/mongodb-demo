@@ -2,8 +2,12 @@
 # Copyright 2019 Kuei-chun Chen. All rights reserved.
 : ${ADMIN_PASSWORD:=admin}
 
+# Enable TLS
+echo "TLS_REQCERT never" >> /etc/openldap/ldap.conf
+echo "TLS_CACERT /server.pem" >> /etc/openldap/ldap.conf
+
 # Start slapd
-/usr/sbin/slapd -u ldap -h "ldapi:/// ldap://ldap.simagix.com ldap://localhost"
+/usr/sbin/slapd -u ldap -h "ldapi:/// ldaps://ldap.simagix.com"
 LDAP_LOG=/tmp/ldap.log
 
 olcRootPW=$(slappasswd -h {SSHA} -s $ADMIN_PASSWORD)

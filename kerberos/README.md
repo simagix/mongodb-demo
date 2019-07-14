@@ -1,5 +1,5 @@
 # Kerberos and MongoDB Enterprise Integration
-Demo how MongoDB Enterprise server integrates with Kerberos 5 server.
+Demo how MongoDB Enterprise server uses Kerberos for authentication and LDAP for authorization.
 
 ## build
 ```
@@ -21,7 +21,7 @@ docker-compose down
 ## Test
 ### Search LDAP
 ```
-ldapsearch -x cn=mdb -b dc=simagix,dc=local -H ldap://ldap.simagix.com
+ldapsearch -x cn=mdb -b dc=simagix,dc=local -H ldaps://ldap.simagix.com
 ```
 
 ### Validate /etc/mongod.conf
@@ -34,7 +34,33 @@ mongoldap --config /etc/mongod.conf --user mdb@SIMAGIX.COM --password secret
 mongo "mongodb://mdb%40$REALM:xxx@mongo.simagix.com/?authMechanism=GSSAPI&authSource=\$external"
 ```
 
+Or
+
+```
+mongo "mongodb://mdb%40$REALM:xxx@mongo.simagix.com/?authMechanism=GSSAPI&authSource=\$external" \
+  --ssl --sslCAFile /ca.crt --sslPEMKeyFile /client.pem
+```
+
 Check connection status:
 ```
 db.runCommand({connectionStatus : 1})
+```
+
+## x509 Certificates
+### Certificate Creation
+```
+create_certs.sh ldap.simagix.com mongo.simagix.com
+
+certs/
+├── ca.crt
+├── client.pem
+├── ldap.simagix.com.pem
+└── mongo.simagix.com.pem
+```
+
+### Enable TLS
+Lines added to */etc/openldap/ldap.conf* on both ldap.simagix.com and mongo.simagix.com.
+```
+TLS_REQCERT never
+TLS_CACERT /server.pem
 ```

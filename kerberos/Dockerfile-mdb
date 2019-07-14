@@ -10,6 +10,11 @@ RUN yum -y install mongodb-enterprise && \
     chown -R mongod:mongod /data/db
 RUN yum install -y openldap-clients nss-pam-ldapd
 EXPOSE 27017
+
+ADD certs/ca.crt /ca.crt
+ADD certs/client.pem /client.pem
+ADD certs/ldap.simagix.com.pem /server.pem
+ADD certs/mongo.simagix.com.pem /mongo.pem
 ADD mongo/mongod.conf /etc/mongod.conf
 ADD entrypoint-mdb.sh /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]

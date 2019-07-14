@@ -6,6 +6,7 @@ ADD openldap/base.ldif /base.ldif
 ADD openldap/db.ldif /db.ldif
 ADD openldap/mdb.ldif /mdb.ldif
 ADD openldap/monitor.ldif /monitor.ldif
+ADD certs/ldap.simagix.com.pem /server.pem
 
 EXPOSE 389 636
 ADD entrypoint-ldap.sh /entrypoint.sh

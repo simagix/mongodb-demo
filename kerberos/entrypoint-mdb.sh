@@ -27,6 +27,10 @@ keytab="$SHARED/mongodb.keytab"
 kadmin -r $REALM -p $ADMIN_USER/admin -w $ADMIN_PASSWORD addprinc -pw $pass mongodb/mongo.simagix.com
 printf "%b" "addent -password -p mongodb/mongo.simagix.com -k 1 -e aes256-cts\n$pass\nwrite_kt $keytab" | ktutil
 
+# Enable TLS
+echo "TLS_REQCERT never" >> /etc/openldap/ldap.conf
+echo "TLS_CACERT /server.pem" >> /etc/openldap/ldap.conf
+
 # Start mongod with auth and GSSAPI
 env KRB5_KTNAME=$keytab mongod -f /etc/mongod.conf
 
@@ -39,14 +43,12 @@ kinit mdb@$REALM -kt $clientkt
 # test with a client
 mongo --host mongo.simagix.com --authenticationMechanism=GSSAPI \
   --authenticationDatabase='$external' --username "mdb@$REALM" \
+  --ssl --sslCAFile /ca.crt --sslPEMKeyFile /client.pem \
   --eval 'db.version()'
 
 # test using a connection string, %2f: / and %40: @
 mongo "mongodb://mdb%40$REALM:xxx@mongo.simagix.com/?authMechanism=GSSAPI&authSource=\$external" \
-  --eval 'db.getSisterDB("admin").getRoles()'
-
-# test using a connection string, password was hardcoded
-mongo "mongodb://mdb:secret@mongo.simagix.com/?authMechanism=PLAIN&authSource=\$external" \
+  --ssl --sslCAFile /ca.crt --sslPEMKeyFile /client.pem \
   --eval 'db.getSisterDB("admin").getRoles()'
 
 # keep the instance up
