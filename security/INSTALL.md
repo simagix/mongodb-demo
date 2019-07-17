@@ -1,6 +1,6 @@
 # MongoDB Installation and Configurations
 
-Instructions to install and secure MongoDB 3.6 on CentOS or RHEL 7 on AWS.
+Instructions to install and secure MongoDB 4.0 on CentOS or RHEL 7 on AWS.
 
 - Turn off SELinux
 - Turn off Transparent Huge Pages
@@ -94,7 +94,7 @@ Create a database volume and mount it at /data by following [Production Notes](h
 [^Production Notes]: https://docs.mongodb.com/manual/administration/production-notes/
 
 ### Installation
-Follow [Install MongoDB Enterprise on Red Hat Enterprise or CentOS](https://docs.mongodb.com/manual/tutorial/install-mongodb-enterprise-on-red-hat/) to install latest version of MongoDB 3.6.  First, create yum repo for MongoDB 3.6 Enterprise edition.
+Follow [Install MongoDB Enterprise on Red Hat Enterprise or CentOS](https://docs.mongodb.com/manual/tutorial/install-mongodb-enterprise-on-red-hat/) to install latest version of MongoDB 4.0.  First, create yum repo for MongoDB 4.0 Enterprise edition.
 
 [^Install MongoDB Enterprise]: https://docs.mongodb.com/manual/tutorial/install-mongodb-enterprise-on-red-hat/
 
@@ -107,10 +107,10 @@ Add the lines below to */etc/yum.repos.d/mongodb-enterprise.repo*
 ```
 [mongodb-enterprise]
 name=MongoDB Enterprise Repository
-baseurl=https://repo.mongodb.com/yum/redhat/$releasever/mongodb-enterprise/3.6/$basearch/
+baseurl=https://repo.mongodb.com/yum/redhat/$releasever/mongodb-enterprise/4.0/$basearch/
 gpgcheck=1
 enabled=1
-gpgkey=https://www.mongodb.org/static/pgp/server-3.6.asc
+gpgkey=https://www.mongodb.org/static/pgp/server-4.0.asc
 ```
 
 Install MongoDB Enterprise edition.
