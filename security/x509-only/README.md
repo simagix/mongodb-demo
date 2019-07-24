@@ -1,4 +1,7 @@
 # X.509 Certificates
+
+A new example is available at [MongoDB Authentication with X509 Certificate](https://github.com/simagix/mongo-x509)
+
 The purpose of this demo is to secure a MongoDB replica set using only X.509 certificates.  In this example, we use X.509 certificate for
 
 - Client authentication
