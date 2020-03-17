@@ -99,18 +99,18 @@ Follow [Install MongoDB Enterprise on Red Hat Enterprise or CentOS](https://docs
 [^Install MongoDB Enterprise]: https://docs.mongodb.com/manual/tutorial/install-mongodb-enterprise-on-red-hat/
 
 ```
-sudo vi /etc/yum.repos.d/mongodb-enterprise.repo
+sudo vi /etc/yum.repos.d/mongodb-enterprise-4.2.repo
 ```
 
 Add the lines below to */etc/yum.repos.d/mongodb-enterprise.repo*
 
 ```
-[mongodb-enterprise]
+[mongodb-enterprise-4.2]
 name=MongoDB Enterprise Repository
-baseurl=https://repo.mongodb.com/yum/redhat/$releasever/mongodb-enterprise/4.0/$basearch/
+baseurl=https://repo.mongodb.com/yum/redhat/$releasever/mongodb-enterprise/4.2/$basearch/
 gpgcheck=1
 enabled=1
-gpgkey=https://www.mongodb.org/static/pgp/server-4.0.asc
+gpgkey=https://www.mongodb.org/static/pgp/server-4.2.asc
 ```
 
 Install MongoDB Enterprise edition.
@@ -544,7 +544,7 @@ replication:
 │   ├── server.pem
 │   └── truststore.jks
 └── yum.repos.d
-    └── mongodb-enterprise.repo
+    └── mongodb-enterprise-4.2.repo
 
 /data
 └── db
