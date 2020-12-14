@@ -11,13 +11,15 @@ import java.util.Arrays;
  */
 class MySQLConn {
     public static void main(String []args) {
-        if (args.length < 3) {
-            System.err.println("usage: MySQLConn bi-uri bi-user bi-password");
-            System.exit(-1);
+        String uri = System.getenv("bi_uri");
+        String user = System.getenv("bi_user");
+        String password = System.getenv("bi_password");
+
+        if (args.length > 2) {
+            uri = args[0];
+            user = args[1];
+            password = args[2];
         }
-        String uri = args[0];
-        String user = args[1];
-        String password = args[2];
 
         try {
             String []protocols = javax.net.ssl.SSLContext.getDefault().getSupportedSSLParameters().getProtocols();
@@ -30,7 +32,6 @@ class MySQLConn {
         } catch (Exception e) {
             e.printStackTrace();
             System.exit(-1);
-        } finally {
         }
     }
 }
