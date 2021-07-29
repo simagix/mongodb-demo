@@ -24,9 +24,9 @@ processManagement:
 net:
   port: 27017
   bindIp: 0.0.0.0
-  ssl:
-    mode: requireSSL
-    PEMKeyFile: $CERTS_ROOT/certs/server.pem
+  tls:
+    mode: requireTLS
+    certificateKeyFile: $CERTS_ROOT/certs/server.pem
     clusterFile: $CERTS_ROOT/certs/server.pem
     CAFile: $CERTS_ROOT/certs/ca.pem
 replication:
@@ -49,13 +49,13 @@ done
 if [ $init -eq 1 ]; then
     sleep 5
     echo "rs.initiate()"
-    mongo mongodb://localhost:27021/admin --sslCAFile $CERTS_ROOT/certs/ca.pem --ssl --sslPEMKeyFile $CERTS_ROOT/certs/client.pem \
+    mongo mongodb://localhost:27021/admin --tlsCAFile $CERTS_ROOT/certs/ca.pem --tls --tlsCertificateKeyFile $CERTS_ROOT/certs/client.pem \
         --eval "rs.initiate( { _id: 'rs', members: [ { _id: 0, host: '$HOSTNAME:27021' }, { _id: 1, host: '$HOSTNAME:27022' }, { _id: 2, host: '$HOSTNAME:27023' }] } )"
 
     ret=0
     while [[ $ret -eq 0 ]]; do
         ret=$(mongo mongodb://localhost:27021/admin?replicaSet=rs \
-            --sslCAFile $CERTS_ROOT/certs/ca.pem --ssl --sslPEMKeyFile $CERTS_ROOT/certs/client.pem \
+            --tlsCAFile $CERTS_ROOT/certs/ca.pem --tls --tlsCertificateKeyFile $CERTS_ROOT/certs/client.pem \
             --eval 'rs.isMaster()' | grep '"ok" : 1' | wc -l)
         echo "wait for primary..."
         sleep 5
@@ -63,16 +63,16 @@ if [ $init -eq 1 ]; then
 
     echo "create admin user"
     mongo mongodb://localhost:27021/admin \
-        --sslCAFile $CERTS_ROOT/certs/ca.pem --ssl --sslPEMKeyFile $CERTS_ROOT/certs/client.pem \
+        --tlsCAFile $CERTS_ROOT/certs/ca.pem --tls --tlsCertificateKeyFile $CERTS_ROOT/certs/client.pem \
         --eval 'db.getSisterDB("$external").runCommand( {
-            createUser:"emailAddress=ken.chen@simagix.com,CN=ken.chen,OU=Consulting,O=Simagix,L=Atlanta,ST=Georgia,C=US" ,
+            createUser:"CN=ken.chen@simagix.com,OU=Users,O=Simagix,L=Atlanta,ST=Georgia,C=US" ,
             roles: [{role: "root", db: "admin" }] })'
 fi
 
-mongo mongodb://localhost:27021/admin?replicaSet=rs \
-    --sslCAFile $CERTS_ROOT/certs/ca.pem --ssl --sslPEMKeyFile $CERTS_ROOT/certs/client.pem \
+mongo 'mongodb://localhost:27021/admin?replicaSet=rs' \
+    --tlsCAFile $CERTS_ROOT/certs/ca.pem --tls --tlsCertificateKeyFile $CERTS_ROOT/certs/client.pem \
     --authenticationMechanism MONGODB-X509 --authenticationDatabase "\$external" \
-    -u "emailAddress=ken.chen@simagix.com,CN=ken.chen,OU=Consulting,O=Simagix,L=Atlanta,ST=Georgia,C=US" \
+    -u "CN=ken.chen@simagix.com,OU=Users,O=Simagix,L=Atlanta,ST=Georgia,C=US" \
     --eval 'rs.status()'
 
 rm -f mongod.conf
